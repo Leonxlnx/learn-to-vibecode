@@ -2,88 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-/* Learn to Vibe Code - Design System */
+/* Awwwards Maximalist - Organic Luxury Design System */
 
 @layer base {
   :root {
-    --background: 220 20% 4%;
-    --foreground: 210 40% 98%;
+    /* Organic Luxury Light Mode - Cream/Eggshell Palette */
+    --background: 40 30% 96%; /* Cream */
+    --foreground: 30 10% 15%; /* Charcoal Brown */
 
-    --card: 220 20% 8%;
-    --card-foreground: 210 40% 98%;
+    --card: 40 25% 93%; /* Eggshell */
+    --card-foreground: 30 10% 15%;
 
-    --popover: 220 20% 8%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 40 30% 96%;
+    --popover-foreground: 30 10% 15%;
 
-    --primary: 175 80% 50%;
-    --primary-foreground: 220 20% 4%;
+    --primary: 30 15% 20%; /* Deep Brown */
+    --primary-foreground: 40 30% 96%;
 
-    --secondary: 220 20% 14%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 35 20% 88%; /* Alabaster */
+    --secondary-foreground: 30 10% 15%;
 
-    --muted: 220 15% 16%;
-    --muted-foreground: 215 20% 60%;
+    --muted: 35 15% 85%;
+    --muted-foreground: 30 10% 40%;
 
-    --accent: 280 70% 60%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 25 60% 45%; /* Terracotta */
+    --accent-foreground: 40 30% 96%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 40 30% 96%;
 
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 175 80% 50%;
+    --border: 35 15% 80%;
+    --input: 35 15% 80%;
+    --ring: 30 15% 20%;
 
-    --radius: 0.75rem;
+    --radius: 1.5rem;
 
-    /* Custom tokens */
-    --glow-primary: 175 80% 50%;
-    --glow-accent: 280 70% 60%;
-    --gradient-start: 175 80% 50%;
-    --gradient-end: 280 70% 60%;
-    --code-bg: 220 20% 6%;
-    --success: 145 70% 50%;
+    /* Custom Organic Tokens */
+    --cream: 40 30% 96%;
+    --eggshell: 40 25% 93%;
+    --alabaster: 35 20% 88%;
+    --charcoal: 30 10% 15%;
+    --warm-brown: 25 20% 25%;
+    --terracotta: 25 60% 45%;
+    --stone: 35 10% 60%;
+    --linen: 40 35% 94%;
 
-    --sidebar-background: 220 20% 6%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 175 80% 50%;
-    --sidebar-primary-foreground: 220 20% 4%;
-    --sidebar-accent: 220 20% 12%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 175 80% 50%;
-  }
-
-  .dark {
-    --background: 220 20% 4%;
-    --foreground: 210 40% 98%;
-    --card: 220 20% 8%;
-    --card-foreground: 210 40% 98%;
-    --popover: 220 20% 8%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 175 80% 50%;
-    --primary-foreground: 220 20% 4%;
-    --secondary: 220 20% 14%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 220 15% 16%;
-    --muted-foreground: 215 20% 60%;
-    --accent: 280 70% 60%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 175 80% 50%;
-    --sidebar-background: 220 20% 6%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 175 80% 50%;
-    --sidebar-primary-foreground: 220 20% 4%;
-    --sidebar-accent: 220 20% 12%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 175 80% 50%;
+    --sidebar-background: 40 25% 93%;
+    --sidebar-foreground: 30 10% 15%;
+    --sidebar-primary: 30 15% 20%;
+    --sidebar-primary-foreground: 40 30% 96%;
+    --sidebar-accent: 35 20% 88%;
+    --sidebar-accent-foreground: 30 10% 15%;
+    --sidebar-border: 35 15% 80%;
+    --sidebar-ring: 30 15% 20%;
   }
 }
 
@@ -92,34 +65,165 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Space Grotesk', sans-serif;
+  html {
+    scroll-behavior: smooth;
   }
 
-  code, pre, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+  body {
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: none;
+  }
+
+  /* Hide default cursor on interactive elements */
+  a, button, [role="button"] {
+    cursor: none;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+  }
+
+  ::selection {
+    background: hsl(var(--charcoal));
+    color: hsl(var(--cream));
   }
 }
 
 @layer utilities {
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
+  /* Organic Luxury Utilities */
+  .text-balance {
+    text-wrap: balance;
   }
 
-  .glow-primary {
-    box-shadow: 0 0 40px -10px hsl(var(--primary) / 0.5);
+  .organic-shadow {
+    box-shadow: 
+      0 2px 4px hsl(var(--charcoal) / 0.02),
+      0 8px 16px hsl(var(--charcoal) / 0.04),
+      0 24px 48px hsl(var(--charcoal) / 0.06);
   }
 
-  .glow-accent {
-    box-shadow: 0 0 40px -10px hsl(var(--accent) / 0.5);
+  .organic-shadow-lg {
+    box-shadow: 
+      0 4px 8px hsl(var(--charcoal) / 0.03),
+      0 16px 32px hsl(var(--charcoal) / 0.06),
+      0 48px 96px hsl(var(--charcoal) / 0.09);
   }
 
-  .glass {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50;
+  /* Line Drawing Animation */
+  .line-draw {
+    background: linear-gradient(90deg, hsl(var(--charcoal)) 100%, transparent 0);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    transition: background-size 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .code-block {
-    @apply bg-code-bg rounded-lg border border-border font-mono text-sm;
+  .line-draw.active,
+  .group:hover .line-draw {
+    background-size: 100% 1px;
   }
+
+  /* Magnetic Button Base */
+  .magnetic {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Fluid Shapes */
+  .fluid-shape {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  /* Image Ken Burns */
+  .ken-burns {
+    animation: kenBurns 20s ease-in-out infinite alternate;
+  }
+
+  @keyframes kenBurns {
+    0% {
+      transform: scale(1) translate(0, 0);
+    }
+    100% {
+      transform: scale(1.1) translate(-2%, -1%);
+    }
+  }
+
+  /* Noise Overlay */
+  .noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* Marquee */
+  .marquee {
+    animation: marquee 30s linear infinite;
+  }
+
+  .marquee-reverse {
+    animation: marquee-reverse 30s linear infinite;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee-reverse {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  /* 3D Tilt Card */
+  .tilt-card {
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+  }
+
+  .tilt-card-inner {
+    transform: translateZ(40px);
+  }
+
+  /* Horizontal Scroll */
+  .horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scroll-item {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--cream));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--stone));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--charcoal));
 }
