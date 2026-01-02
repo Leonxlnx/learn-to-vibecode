@@ -2,61 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;500;700;900&family=JetBrains+Mono:wght@400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&display=swap');
 
-/* Awwwards Maximalist - Organic Luxury Design System */
+/* Learn2Vibecode - Dark Premium Theme */
 
 @layer base {
   :root {
-    /* Organic Luxury Light Mode - Cream/Eggshell Palette */
-    --background: 40 30% 96%; /* Cream */
-    --foreground: 30 10% 15%; /* Charcoal Brown */
+    /* Dark Premium Palette */
+    --background: 0 0% 3%; /* #050505 */
+    --foreground: 0 0% 94%; /* #f0f0f0 */
 
-    --card: 40 25% 93%; /* Eggshell */
-    --card-foreground: 30 10% 15%;
+    --card: 0 0% 5%; /* #0a0a0a */
+    --card-foreground: 0 0% 94%;
 
-    --popover: 40 30% 96%;
-    --popover-foreground: 30 10% 15%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 94%;
 
-    --primary: 30 15% 20%; /* Deep Brown */
-    --primary-foreground: 40 30% 96%;
+    --primary: 0 0% 94%; /* White text */
+    --primary-foreground: 0 0% 3%;
 
-    --secondary: 35 20% 88%; /* Alabaster */
-    --secondary-foreground: 30 10% 15%;
+    --secondary: 0 0% 7%; /* #111111 */
+    --secondary-foreground: 0 0% 94%;
 
-    --muted: 35 15% 85%;
-    --muted-foreground: 30 10% 40%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 25 60% 45%; /* Terracotta */
-    --accent-foreground: 40 30% 96%;
+    --accent: 14 100% 50%; /* #FF3300 accent */
+    --accent-foreground: 0 0% 94%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 40 30% 96%;
+    --destructive-foreground: 0 0% 94%;
 
-    --border: 35 15% 80%;
-    --input: 35 15% 80%;
-    --ring: 30 15% 20%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 94%;
 
     --radius: 1.5rem;
 
-    /* Custom Organic Tokens */
-    --cream: 40 30% 96%;
-    --eggshell: 40 25% 93%;
-    --alabaster: 35 20% 88%;
-    --charcoal: 30 10% 15%;
-    --warm-brown: 25 20% 25%;
-    --terracotta: 25 60% 45%;
-    --stone: 35 10% 60%;
-    --linen: 40 35% 94%;
+    /* Dark Custom Tokens */
+    --surface: 0 0% 5%;
+    --surface-secondary: 0 0% 7%;
+    --charcoal: 0 0% 3%;
 
-    --sidebar-background: 40 25% 93%;
-    --sidebar-foreground: 30 10% 15%;
-    --sidebar-primary: 30 15% 20%;
-    --sidebar-primary-foreground: 40 30% 96%;
-    --sidebar-accent: 35 20% 88%;
-    --sidebar-accent-foreground: 30 10% 15%;
-    --sidebar-border: 35 15% 80%;
-    --sidebar-ring: 30 15% 20%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 94%;
+    --sidebar-primary: 0 0% 94%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 0 0% 10%;
+    --sidebar-accent-foreground: 0 0% 94%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 0 0% 94%;
   }
 }
 
@@ -71,23 +66,31 @@
 
   body {
     @apply bg-background text-foreground antialiased overflow-x-hidden;
-    font-family: 'Space Grotesk', sans-serif;
-    cursor: none;
+    font-family: 'Inter Tight', 'Space Grotesk', sans-serif;
+    background-color: #050505;
+    scrollbar-width: none; /* Firefox */
   }
 
-  /* Hide default cursor on interactive elements */
-  a, button, [role="button"] {
-    cursor: none;
+  body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
   }
 
   h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 400;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 900;
+  }
+
+  .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 
   ::selection {
-    background: hsl(var(--charcoal));
-    color: hsl(var(--cream));
+    background: white;
+    color: black;
   }
 }
 
