@@ -1,17 +1,16 @@
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Bubble from '@/components/3d/Bubble';
-import EarlyAccessModal from '@/components/EarlyAccessModal';
 
 /**
  * Hero section with animated 3D bubble background
  * Features staggered text animations and CTA button
  */
 const Hero = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const containerVars: Variants = {
         visible: {
@@ -103,29 +102,28 @@ const Hero = () => {
                     </h1>
 
                     {/* WAITLIST BUTTON */}
-                    <motion.button
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 2.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                        onClick={() => setIsModalOpen(true)}
-                        className="pointer-events-auto mt-12 group relative flex items-center gap-4 px-9 py-4 bg-black/20 hover:bg-white/5 border border-white/10 rounded-full backdrop-blur-xl transition-all duration-500 hover:border-white/20 hover:scale-[1.02]"
-                    >
-                        <span className="text-xs font-bold tracking-[0.2em] uppercase text-white/70 group-hover:text-white transition-colors duration-300">
-                            Join Early Access
-                        </span>
-                        <ArrowRight className="w-3.5 h-3.5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                    <Link to="/early-access">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 2.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                            className="pointer-events-auto mt-12 group relative flex items-center gap-4 px-9 py-4 bg-black/20 hover:bg-white/5 border border-white/10 rounded-full backdrop-blur-xl transition-all duration-500 hover:border-white/20 hover:scale-[1.02]"
+                        >
+                            <span className="text-xs font-bold tracking-[0.2em] uppercase text-white/70 group-hover:text-white transition-colors duration-300">
+                                Join Early Access
+                            </span>
+                            <ArrowRight className="w-3.5 h-3.5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
 
-                        {/* Subtle glow on hover */}
-                        <div className="absolute inset-0 rounded-full ring-1 ring-white/5 group-hover:ring-white/20 transition-all duration-500" />
+                            {/* Subtle glow on hover */}
+                            <div className="absolute inset-0 rounded-full ring-1 ring-white/5 group-hover:ring-white/20 transition-all duration-500" />
 
-                        {/* Inner gradient for glass feel */}
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-t from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    </motion.button>
+                            {/* Inner gradient for glass feel */}
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-t from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        </motion.div>
+                    </Link>
 
                 </motion.div>
             </section>
-
-            <EarlyAccessModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </>
     );
 };
