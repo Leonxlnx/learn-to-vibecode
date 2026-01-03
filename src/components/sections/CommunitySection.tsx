@@ -1,72 +1,68 @@
 import { motion } from 'framer-motion';
 
-const TestimonialCard = ({ quote, author, role, delay }: any) => (
-    <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay, duration: 0.6 }}
-        className="bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl mb-6 break-inside-avoid hover:border-white/10 transition-colors"
-    >
-        <p className="text-white/80 text-lg leading-relaxed mb-6">"{quote}"</p>
-        <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-xs font-bold text-white">
-                {author.charAt(0)}
-            </div>
-            <div>
-                <p className="text-white font-bold text-sm">{author}</p>
-                <p className="text-white/40 text-xs">{role}</p>
-            </div>
-        </div>
-    </motion.div>
-);
+const statements = [
+    {
+        text: "Coding is now 90% logic, 10% syntax. I focus on the architecture, AI handles the typing.",
+        author: "SENIOR DEV"
+    },
+    {
+        text: "I built my entire SaaS backend in a weekend. Supersbase + Cursor is a cheat code.",
+        author: "FOUNDER"
+    },
+    {
+        text: "Finally, I can build what I imagine without getting stuck on CSS grids for 4 hours.",
+        author: "DESIGNER"
+    },
+    {
+        text: "It's not about replacing developers. It's about becoming a 10x developer.",
+        author: "LEAD ENG"
+    },
+    {
+        text: "Vibecoding turned my ideas into deployed products. No more localhost graveyards.",
+        author: "MAKER"
+    },
+    {
+        text: "The barrier to entry is gone. If you can think logically, you can build software.",
+        author: "STUDENT"
+    }
+];
 
 const CommunitySection = () => {
-    const testimonials = [
-        {
-            quote: "I laid off my agency and built it myself in a weekend. Saved $20k instantly.",
-            author: "Sarah J.",
-            role: "Founder, E-com Brand"
-        },
-        {
-            quote: "I thought I was too old to learn coding. With Vibe Coding, I shipped my first SaaS at 45.",
-            author: "Michael R.",
-            role: "Ex-Sales"
-        },
-        {
-            quote: "This is not just coding. This is architectural creativity unleashed.",
-            author: "Davide",
-            role: "Product Designer"
-        },
-        {
-            quote: "Finally I understand SQL because the AI explains it while writing it. It's like having a senior engineer next to me.",
-            author: "Jessica",
-            role: "Marketing Lead"
-        },
-        {
-            quote: "Vibe Coding is basically cheating, but legal. I built a CRM in 4 hours.",
-            author: "Tom H.",
-            role: "Freelancer"
-        },
-        {
-            quote: "The clear explanation of the stack changed everything for me. Cursor is a superpower.",
-            author: "Alex",
-            role: "Student"
-        }
-    ];
-
     return (
-        <section className="w-full py-32 px-6 bg-[#050505] flex justify-center">
-            <div className="max-w-6xl w-full">
+        <section className="w-full py-40 px-6 bg-[#030303] relative overflow-hidden">
 
-                <div className="text-center mb-20">
-                    <h2 className="text-4xl font-bold text-white mb-4">The Wall of <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">Vibes</span></h2>
-                    <p className="text-white/40">Real results from the community.</p>
+            <div className="max-w-7xl mx-auto relative z-10">
+
+                <div className="mb-24 flex flex-col items-center text-center">
+                    <span className="text-xs font-mono uppercase tracking-[0.3em] text-red-500 mb-6 border px-4 py-1 rounded-full border-red-500/20 bg-red-500/5">
+                        New Paradigm
+                    </span>
+                    <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-6">
+                        THE VIBE
+                    </h2>
                 </div>
 
-                <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-                    {testimonials.map((t, i) => (
-                        <TestimonialCard key={i} {...t} delay={i * 0.1} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {statements.map((s, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1 }}
+                            whileHover={{ y: -5 }}
+                            className="bg-[#080808] p-10 rounded-3xl border border-white/5 hover:border-white/10 transition-colors flex flex-col justify-between h-[300px]"
+                        >
+                            <p className="text-2xl font-medium text-white/80 leading-relaxed">
+                                "{s.text}"
+                            </p>
+                            <div className="mt-8 pt-8 border-t border-white/5 flex items-center gap-4">
+                                <div className="w-2 h-2 rounded-full bg-red-500" />
+                                <span className="font-mono text-sm uppercase tracking-widest text-white/40">
+                                    {s.author}
+                                </span>
+                            </div>
+                        </motion.div>
                     ))}
                 </div>
 

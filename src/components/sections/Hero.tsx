@@ -128,7 +128,7 @@ const Hero = () => {
                             transition={{ delay: 3, duration: 1 }}
                             className="text-xs font-mono uppercase tracking-widest text-white/50"
                         >
-                            Free Course
+                            Free
                         </motion.span>
                     </div>
 

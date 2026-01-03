@@ -1,53 +1,46 @@
-import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const FooterSection = () => {
     return (
-        <footer className="w-full bg-[#000] pt-20 pb-12 px-6 border-t border-white/5">
-            <div className="max-w-7xl mx-auto">
+        <footer className="w-full bg-[#030303] border-t border-white/5 py-16 px-6 relative overflow-hidden">
+            {/* Background */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]" />
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-20">
-                    <div className="col-span-2 md:col-span-1">
-                        <h4 className="text-2xl font-black text-white mb-6">L2V.</h4>
-                        <p className="text-white/30 text-sm leading-relaxed">
-                            The new standard for modern software creation. Orchestrate intelligence, don't just write code.
-                        </p>
-                    </div>
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12 relative z-10">
 
-                    <div>
-                        <h5 className="text-white font-bold mb-6">Product</h5>
-                        <ul className="space-y-4 text-sm text-white/40">
-                            <li className="hover:text-red-500 cursor-pointer transition-colors">Curriculum</li>
-                            <li className="hover:text-red-500 cursor-pointer transition-colors">Pricing</li>
-                            <li className="hover:text-red-500 cursor-pointer transition-colors">Showcase</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h5 className="text-white font-bold mb-6">Company</h5>
-                        <ul className="space-y-4 text-sm text-white/40">
-                            <li className="hover:text-red-500 cursor-pointer transition-colors">About</li>
-                            <li className="hover:text-red-500 cursor-pointer transition-colors">Manifesto</li>
-                            <li className="hover:text-red-500 cursor-pointer transition-colors">Contact</li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h5 className="text-white font-bold mb-6">Socials</h5>
-                        <ul className="space-y-4 text-sm text-white/40">
-                            <li className="hover:text-white cursor-pointer transition-colors">Twitter / X</li>
-                            <li className="hover:text-white cursor-pointer transition-colors">GitHub</li>
-                            <li className="hover:text-white cursor-pointer transition-colors">Discord</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5">
-                    <p className="text-white/20 text-xs">© 2026 Learn to Vibecode. All rights reserved.</p>
-                    <p className="text-white/20 text-xs font-mono mt-4 md:mt-0">
-                        Designed by <span className="text-white">Properly</span>
+                {/* Brand */}
+                <div className="flex flex-col gap-6">
+                    <Link to="/" className="flex items-center gap-3 opacity-90 hover:opacity-100 transition-opacity">
+                        <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-10 h-10" />
+                        <span className="text-white font-bold text-xl tracking-tight">Learn2Vibecode</span>
+                    </Link>
+                    <p className="text-white/40 text-sm max-w-xs font-light">
+                        The art of orchestrating logic.<br />
+                        Building the future, one prompt at a time.
                     </p>
                 </div>
 
+                {/* Links */}
+                <div className="flex gap-16 text-sm">
+                    <div className="flex flex-col gap-4">
+                        <span className="text-white font-bold mb-2">Platform</span>
+                        <a href="#" className="text-white/50 hover:text-white transition-colors">Curriculum</a>
+                        <a href="#" className="text-white/50 hover:text-white transition-colors">Pricing</a>
+                        <Link to="/auth" className="text-white/50 hover:text-white transition-colors">Login</Link>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <span className="text-white font-bold mb-2">Connect</span>
+                        <a href="#" className="text-white/50 hover:text-white transition-colors">Twitter</a>
+                        <a href="#" className="text-white/50 hover:text-white transition-colors">Discord</a>
+                        <a href="#" className="text-white/50 hover:text-white transition-colors">GitHub</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 flex justify-between items-center text-xs text-white/20 font-mono uppercase tracking-widest">
+                <span>© 2026 VibeCode</span>
+                <span>All Systems Nominal</span>
             </div>
         </footer>
     );

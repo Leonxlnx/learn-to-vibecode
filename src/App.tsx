@@ -1,15 +1,33 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box, Layers, Zap, Code, Cpu, Globe, MessageCircle, Twitter, Mail } from 'lucide-react';
 import CardNav from '@/components/ui/CardNav';
 import Hero from '@/components/sections/Hero';
+import WhatIsVibecodingSection from '@/components/sections/WhatIsVibecodingSection';
 import TheShiftSection from '@/components/sections/TheShiftSection';
 import ProphetSection from '@/components/sections/ProphetSection';
-import TargetAudienceSection from '@/components/sections/TargetAudienceSection';
-import VibeStackSection from '@/components/sections/VibeStackSection';
-import StatsGridSection from '@/components/sections/StatsGridSection';
+import TheToolsSection from '@/components/sections/TheToolsSection';
+import ProblemSection from '@/components/sections/ProblemSection';
 import CommunitySection from '@/components/sections/CommunitySection';
 import CurriculumSection from '@/components/sections/CurriculumSection';
 import CTASection from '@/components/sections/CTASection';
 import FooterSection from '@/components/sections/FooterSection';
+import Auth from '@/pages/Auth';
+
+// Helper to layout main landing page components
+const LandingPage = () => (
+  <main>
+    <Hero />
+    <WhatIsVibecodingSection />
+    <TheShiftSection />
+    <ProphetSection />
+    <TheToolsSection />
+    <ProblemSection />
+    <CommunitySection />
+    <CurriculumSection />
+    <CTASection />
+    <FooterSection />
+  </main>
+);
 
 /**
  * Main App component for Learn2Vibecode landing page
@@ -21,7 +39,7 @@ const App = () => {
       links: [
         {
           label: "Our Vision",
-          description: "Redefining digital education through motion.",
+          description: "Redefining digital education.",
           span: "col-span-2",
           icon: <Globe size={18} />,
           color: "from-white/10 to-white/5"
@@ -32,13 +50,6 @@ const App = () => {
           span: "col-span-1",
           icon: <Cpu size={18} />,
           color: "from-white/10 to-white/5"
-        },
-        {
-          label: "Careers",
-          description: "Join the movement.",
-          span: "col-span-1",
-          icon: <Zap size={18} />,
-          color: "from-white/10 to-white/5"
         }
       ]
     },
@@ -47,16 +58,9 @@ const App = () => {
       links: [
         {
           label: "Vibecode Pro",
-          description: "The ultimate creative development course.",
+          description: "The ultimate creative course.",
           span: "col-span-2",
           icon: <Layers size={18} />,
-          color: "from-white/10 to-white/5"
-        },
-        {
-          label: "Components",
-          description: "Copy-paste magic.",
-          span: "col-span-1",
-          icon: <Box size={18} />,
           color: "from-white/10 to-white/5"
         },
         {
@@ -73,7 +77,7 @@ const App = () => {
       links: [
         {
           label: "Community",
-          description: "Join 10k+ developers.",
+          description: "Join the movement.",
           span: "col-span-2",
           icon: <MessageCircle size={18} />,
           color: "from-white/10 to-white/5"
@@ -84,42 +88,30 @@ const App = () => {
           span: "col-span-1",
           icon: <Twitter size={18} />,
           color: "from-white/10 to-white/5"
-        },
-        {
-          label: "Email",
-          description: "Contact us.",
-          span: "col-span-1",
-          icon: <Mail size={18} />,
-          color: "from-white/10 to-white/5"
         }
       ]
     }
   ];
 
   return (
-    <main className="bg-[#050505] text-primary selection:bg-white selection:text-black antialiased">
-      <CardNav
-        logoAlt="Learn2Vibecode"
-        items={navItems}
-        baseColor="#ffffff"
-        menuColor="#000"
-        buttonBgColor="#111"
-        buttonTextColor="#fff"
-        ease="power3.out"
-      />
-      <Hero />
-      <TheShiftSection />
-      <ProphetSection />
-      <TargetAudienceSection />
-      <VibeStackSection />
-      <StatsGridSection />
-      <CommunitySection />
-      <CurriculumSection />
-      <CTASection />
-      <FooterSection />
-    </main>
+    <Router>
+      <div className="relative w-full bg-black min-h-screen text-white overflow-x-hidden selection:bg-red-500/30">
+        <CardNav
+          logoAlt="Learn2Vibecode"
+          items={navItems}
+          baseColor="#ffffff"
+          menuColor="#000"
+          buttonBgColor="#111"
+          buttonTextColor="#fff"
+          ease="power3.out"
+        />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </div>
+    </Router>
   );
 };
 
 export default App;
-
