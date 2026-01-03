@@ -70,25 +70,32 @@ const Onboarding = () => {
 
     const handleComplete = async () => {
         // Determine learning path based on vibecoding experience + programming skills
-        // 5 PATHS:
-        // 1. "speedrunner" - High vibecoding (3-4), wants to skip basics and just build
-        // 2. "builder" - Some vibecoding (1-2) + some coding, balanced approach
-        // 3. "developer" - High coding (4-5) but low vibecoding (0), skip programming basics
-        // 4. "beginner" - Low coding (0-2) + no vibecoding, full curriculum
-        // 5. "expert" - Already an expert (4), just show advanced tips
+        // 5 PATHS - BALANCED LOGIC:
+        // 1. "expert" - Claims expert vibecoder (4) AND has coding experience (avgExp >= 3)
+        // 2. "speedrunner" - Good at vibecoding (3+) AND some coding (avgExp >= 2)
+        // 3. "developer" - Strong coder (avgExp >= 4) but new to vibecoding (0-1)
+        // 4. "builder" - Has some experience either way
+        // 5. "beginner" - Low on both, needs full curriculum
 
         const avgExp = (data.expGeneral + data.expWebdev + data.expAppdev + data.expGamedev) / 4;
         const vibeLvl = data.vibecodeLevel;
 
         let path = 'beginner';
 
-        if (vibeLvl >= 4) {
+        // Expert: Must have BOTH high vibecoding AND coding skills
+        if (vibeLvl >= 4 && avgExp >= 3) {
             path = 'expert';
-        } else if (vibeLvl >= 3) {
+        }
+        // Speedrunner: Good at vibecoding with decent coding background
+        else if (vibeLvl >= 3 && avgExp >= 2) {
             path = 'speedrunner';
-        } else if (avgExp >= 4 && vibeLvl <= 1) {
+        }
+        // Developer: Strong coder but new to AI-assisted development
+        else if (avgExp >= 4 && vibeLvl <= 1) {
             path = 'developer';
-        } else if (vibeLvl >= 1 || avgExp >= 2) {
+        }
+        // Builder: Has some experience in either vibecoding or regular coding
+        else if (vibeLvl >= 1 || avgExp >= 2) {
             path = 'builder';
         }
 
@@ -114,7 +121,7 @@ const Onboarding = () => {
                         learning_path: path,
                         onboarding_completed: true
                     });
-                
+
                 if (error) {
                     console.error('Error saving profile:', error);
                 }

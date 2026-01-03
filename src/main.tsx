@@ -22,7 +22,13 @@ createRoot(document.getElementById("root")!).render(
       <Route path="/auth" element={<Auth />} />
       <Route path="/login" element={<Auth />} />
       <Route path="/onboarding" element={<Onboarding />} />
+      {/* Dashboard routes - all handled by Dashboard component */}
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard/course" element={<Dashboard />} />
+      <Route path="/dashboard/projects" element={<Dashboard />} />
+      <Route path="/dashboard/resources" element={<Dashboard />} />
+      <Route path="/dashboard/settings" element={<Dashboard />} />
+      {/* Public pages */}
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/curriculum" element={<CurriculumPage />} />
       <Route path="/resources" element={<Resources />} />
