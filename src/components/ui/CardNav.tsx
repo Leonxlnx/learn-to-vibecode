@@ -1,21 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoArrowUpRight, GoChevronDown } from 'react-icons/go';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, LogOut, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 // --- Types ---
-interface Link {
+interface LinkItem {
     label: string;
     href?: string;
     description?: string;
     icon?: React.ReactNode;
-    span?: string; // 'col-span-1' | 'col-span-2'
-    color?: string; // specific gradient or color for the bento card
+    span?: string;
+    color?: string;
 }
 
 interface Item {
     label: string;
-    links: Link[];
+    links: LinkItem[];
 }
 
 interface CardNavProps {
@@ -38,8 +41,29 @@ const CardNav = ({
     logoAlt = 'Logo',
     items,
 }: CardNavProps) => {
+    const navigate = useNavigate();
     const [activeIndices, setActiveIndices] = useState<number | null>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [user, setUser] = useState<SupabaseUser | null>(null);
+    const [showUserMenu, setShowUserMenu] = useState(false);
+
+    useEffect(() => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        setShowUserMenu(false);
+        navigate('/');
+    };
 
     return (
         <>
@@ -51,7 +75,7 @@ const CardNav = ({
                 className="fixed top-6 left-1/2 z-50 hidden md:flex items-center gap-2 p-1.5 pl-6 pr-1.5 rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
             >
                 {/* Logo */}
-                <div className="flex items-center gap-2 mr-4 cursor-pointer group select-none flex-shrink-0">
+                <Link to="/" className="flex items-center gap-2 mr-4 cursor-pointer group select-none flex-shrink-0">
                     {logo ? (
                         <img src={logo} alt={logoAlt} className="h-6 w-auto" />
                     ) : (
@@ -63,7 +87,7 @@ const CardNav = ({
                             <span className="font-bold tracking-tight text-white text-sm uppercase">Learn2Vibecode</span>
                         </div>
                     )}
-                </div>
+                </Link>
 
                 {/* Links with Bento Dropdowns */}
                 <ul className="flex items-center gap-1">
@@ -76,9 +100,9 @@ const CardNav = ({
                         >
                             <button
                                 className={`
-                  relative px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-full flex items-center gap-1.5
-                  ${activeIndices === index ? 'text-black bg-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'text-gray-400 hover:text-white'}
-                `}
+                                    relative px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all duration-300 rounded-full flex items-center gap-1.5
+                                    ${activeIndices === index ? 'text-black bg-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'text-gray-400 hover:text-white'}
+                                `}
                             >
                                 {item.label}
                                 <motion.span animate={{ rotate: activeIndices === index ? 180 : 0 }}>
@@ -107,11 +131,11 @@ const CardNav = ({
                                                         key={i}
                                                         href={link.href || '#'}
                                                         className={`
-                                        relative group overflow-hidden rounded-xl border border-white/5 p-4 flex flex-col justify-between
-                                        transition-all duration-300 hover:border-white/20 hover:shadow-lg
-                                        ${link.span || 'col-span-1'}
-                                        ${link.span === 'col-span-2' ? 'h-24' : 'h-32'}
-                                    `}
+                                                            relative group overflow-hidden rounded-xl border border-white/5 p-4 flex flex-col justify-between
+                                                            transition-all duration-300 hover:border-white/20 hover:shadow-lg
+                                                            ${link.span || 'col-span-1'}
+                                                            ${link.span === 'col-span-2' ? 'h-24' : 'h-32'}
+                                                        `}
                                                     >
                                                         {/* Hover Gradient Background */}
                                                         <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${link.color || 'from-white/5 to-white/10'}`} />
@@ -144,18 +168,53 @@ const CardNav = ({
                     ))}
                 </ul>
 
-                {/* CTA */}
+                {/* CTA / User Menu */}
                 <div className="flex items-center ml-2">
-                    <button className="relative overflow-hidden px-5 py-2 rounded-full bg-[#111] text-white text-[10px] font-bold uppercase tracking-widest border border-white/10 hover:border-white/30 transition-all active:scale-95 group whitespace-nowrap">
-                        <span className="relative z-10">Start Learning</span>
-                        <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    </button>
+                    {user ? (
+                        <div className="relative">
+                            <button 
+                                onClick={() => setShowUserMenu(!showUserMenu)}
+                                className="relative overflow-hidden px-4 py-2 rounded-full bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest border border-white/20 hover:border-white/40 transition-all duration-300 flex items-center gap-2"
+                            >
+                                <User size={14} />
+                                <span className="max-w-[100px] truncate">{user.email?.split('@')[0]}</span>
+                            </button>
+                            
+                            <AnimatePresence>
+                                {showUserMenu && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        className="absolute top-full right-0 mt-2 p-2 rounded-2xl bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 shadow-2xl min-w-[160px]"
+                                    >
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"
+                                        >
+                                            <LogOut size={16} />
+                                            <span>Logout</span>
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    ) : (
+                        <Link to="/auth">
+                            <button className="relative overflow-hidden px-5 py-2 rounded-full bg-white text-black text-[10px] font-bold uppercase tracking-widest border border-white/10 hover:shadow-[0_0_30px_rgba(255,255,255,0.2)] transition-all duration-500 active:scale-95 group whitespace-nowrap">
+                                <span className="relative z-10 group-hover:text-white transition-colors duration-500">Start Learning</span>
+                                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-500 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                            </button>
+                        </Link>
+                    )}
                 </div>
             </motion.nav>
 
             {/* --- MOBILE NAV --- */}
             <div className="md:hidden fixed top-4 left-4 right-4 z-50 flex justify-between items-center p-3 px-5 rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-xl shadow-lg">
-                <span className="font-bold text-white text-sm tracking-tight uppercase">Learn2Vibecode</span>
+                <Link to="/">
+                    <span className="font-bold text-white text-sm tracking-tight uppercase">Learn2Vibecode</span>
+                </Link>
                 <button
                     onClick={() => setIsMobileMenuOpen(true)}
                     className="p-2 text-white hover:bg-white/10 rounded-full transition-colors"
@@ -177,13 +236,13 @@ const CardNav = ({
                         <div className="flex justify-end mb-8">
                             <button
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="p-3 bg-white/10 rounded-full text-white hover:bg-white/20"
+                                className="p-3 bg-white/10 rounded-full text-white hover:bg-white/20 transition-colors"
                             >
                                 <X size={24} />
                             </button>
                         </div>
 
-                        <div className="flex flex-col gap-8 mt-4 overflow-y-auto">
+                        <div className="flex flex-col gap-8 mt-4 overflow-y-auto flex-1">
                             {items.map((item, idx) => (
                                 <div key={idx} className="flex flex-col gap-4">
                                     <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">{item.label}</h3>
@@ -193,9 +252,9 @@ const CardNav = ({
                                                 key={i}
                                                 href="#"
                                                 className={`
-                            bg-[#111] border border-white/5 rounded-2xl p-4 flex flex-col gap-4 active:scale-95 transition-transform
-                            ${link.span === 'col-span-2' ? 'col-span-2' : 'col-span-1'}
-                        `}
+                                                    bg-[#111] border border-white/5 rounded-2xl p-4 flex flex-col gap-4 active:scale-95 transition-transform
+                                                    ${link.span === 'col-span-2' ? 'col-span-2' : 'col-span-1'}
+                                                `}
                                             >
                                                 <div className="text-white">
                                                     {link.icon || <Sparkles size={16} />}
@@ -211,9 +270,29 @@ const CardNav = ({
                             ))}
                         </div>
 
-                        <button className="mt-auto w-full py-4 bg-white text-black font-bold rounded-xl uppercase tracking-widest">
-                            Get Started
-                        </button>
+                        {user ? (
+                            <div className="mt-6 space-y-3">
+                                <div className="w-full py-3 px-4 bg-white/5 text-white/70 font-medium rounded-xl text-center text-sm border border-white/10">
+                                    {user.email}
+                                </div>
+                                <button 
+                                    onClick={() => {
+                                        handleLogout();
+                                        setIsMobileMenuOpen(false);
+                                    }}
+                                    className="w-full py-4 bg-white/10 text-white font-bold rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                                >
+                                    <LogOut size={18} />
+                                    Logout
+                                </button>
+                            </div>
+                        ) : (
+                            <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                                <button className="mt-6 w-full py-4 bg-white text-black font-bold rounded-xl uppercase tracking-widest active:scale-95 transition-transform">
+                                    Start Learning
+                                </button>
+                            </Link>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
