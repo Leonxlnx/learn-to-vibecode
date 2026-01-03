@@ -31,12 +31,12 @@ const Auth = () => {
 
   // Check if user is already logged in
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) navigate('/');
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) navigate('/dashboard');
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) navigate('/');
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) navigate('/dashboard');
     });
 
     return () => subscription.unsubscribe();
@@ -66,7 +66,8 @@ const Auth = () => {
         const { error } = await supabase.auth.signInWithPassword({ email: formData.email, password: formData.password });
         if (error) throw error;
         toast.success('Welcome back!');
-        navigate('/');
+        navigate('/dashboard');
+        // Navigation handled by onAuthStateChange
       } else {
         // SIGNUP LOGIC
         const result = signupSchema.safeParse(formData);
@@ -76,11 +77,12 @@ const Auth = () => {
           setErrors(fieldErrors); setIsLoading(false); return;
         }
 
-        // Explicitly passing name to metadata
+        const redirectUrl = `${window.location.origin}/dashboard`;
         const { error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
           options: {
+            emailRedirectTo: redirectUrl,
             data: {
               full_name: formData.name,
               name: formData.name
@@ -89,9 +91,8 @@ const Auth = () => {
         });
 
         if (error) throw error;
-        toast.success('Account created! Please check your email.');
-        // Don't navigate immediately on signup if email confirm is needed, but assuming auto-login or simple flow:
-        navigate('/');
+        toast.success('Account created successfully!');
+        // Navigation handled by onAuthStateChange after auto-confirm
       }
     } catch (err: any) {
       toast.error(err.message || 'Something went wrong.');
