@@ -16,6 +16,30 @@ const signupSchema = z.object({
   email: z.string().email('Please enter a valid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
+// Map Supabase auth errors to generic user-friendly messages
+const getAuthErrorMessage = (error: any): string => {
+  const errorCode = error?.code || error?.error_code || error?.message;
+  
+  // Use generic messages to prevent user enumeration and info leakage
+  const errorMap: Record<string, string> = {
+    'invalid_credentials': 'Invalid email or password.',
+    'Invalid login credentials': 'Invalid email or password.',
+    'user_already_exists': 'Unable to create account. Please try again.',
+    'User already registered': 'Unable to create account. Please try again.',
+    'email_not_confirmed': 'Please check your email to confirm your account.',
+    'weak_password': 'Please choose a stronger password.',
+    'over_request_rate_limit': 'Too many attempts. Please try again later.',
+    'signup_disabled': 'Sign up is currently disabled.',
+  };
+  
+  for (const [key, message] of Object.entries(errorMap)) {
+    if (errorCode?.includes(key)) {
+      return message;
+    }
+  }
+  
+  return 'Authentication failed. Please try again.';
+};
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -95,7 +119,7 @@ const Auth = () => {
         // Navigation handled by onAuthStateChange after auto-confirm
       }
     } catch (err: any) {
-      toast.error(err.message || 'Something went wrong.');
+      toast.error(getAuthErrorMessage(err));
     } finally {
       setIsLoading(false);
     }
