@@ -2,99 +2,120 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 /**
- * Prophet Section - Andrej Karpathy Quote
- * Refined Liquid Glitch on Hover (Cleaner implementation)
+ * Prophet Section
+ * Refined Glitch: Stronger, clear distortion effects on hover.
  */
 const ProphetSection = () => {
     const [isHovering, setIsHovering] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
-    const [maskPos, setMaskPos] = useState({ x: 50, y: 50 });
+    const [coords, setCoords] = useState({ x: 0.5, y: 0.5 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!containerRef.current) return;
         const rect = containerRef.current.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        setMaskPos({ x, y });
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        setCoords({ x, y });
     };
 
     return (
-        <section className="relative w-full py-32 px-6 bg-[#050505] flex items-center justify-center overflow-hidden">
+        <section className="relative w-full py-40 px-6 bg-[#030303] flex items-center justify-center overflow-hidden border-t border-white/5">
 
-            <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-20 items-center">
+            <div className="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-red-900/40 to-transparent" />
+
+            <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-24 items-center">
 
                 {/* IMAGE SIDE */}
                 <div className="flex justify-center lg:justify-end">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
                         ref={containerRef}
-                        className="relative w-[400px] h-[400px] rounded-full cursor-none"
+                        className="relative w-[500px] h-[500px] rounded-full cursor-none group"
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
                         onMouseMove={handleMouseMove}
                     >
                         {/* Main Image Container */}
-                        <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10 bg-[#111]">
+                        <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10 bg-[#080808] z-10 transition-transform duration-100 ease-out"
+                            style={{
+                                transform: isHovering
+                                    ? `perspective(1000px) rotateY(${(coords.x - 0.5) * 10}deg) rotateX(${(coords.y - 0.5) * -10}deg)`
+                                    : 'none'
+                            }}
+                        >
 
                             {/* Normal Image */}
                             <img
                                 src="/images/karpathy-normal.png"
-                                alt="Andrej Karpathy"
-                                className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 transition-opacity duration-500"
+                                alt="Karpathy"
+                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-100 ${isHovering ? 'opacity-0' : 'opacity-100 grayscale'}`}
                             />
 
-                            {/* Glitch Overlay (Revealed by Mask) */}
+                            {/* Glitch Image - Revealed INSTANTLY on Hover */}
                             <div
-                                className="absolute inset-0 w-full h-full bg-red-900/20 mix-blend-overlay"
-                                style={{
-                                    opacity: isHovering ? 1 : 0,
-                                    maskImage: `radial-gradient(circle 120px at ${maskPos.x}% ${maskPos.y}%, black, transparent)`,
-                                    WebkitMaskImage: `radial-gradient(circle 120px at ${maskPos.x}% ${maskPos.y}%, black, transparent)`,
-                                    transition: 'opacity 0.2s ease-out'
-                                }}
+                                className={`absolute inset-0 bg-transparent transition-opacity duration-75 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
                             >
+                                {/* Red Channel Shift */}
                                 <img
                                     src="/images/karpathy-glitch.png"
-                                    alt="Karpathy Glitch"
-                                    className="absolute inset-0 w-full h-full object-cover mix-blend-hard-light scale-105"
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-80"
+                                    style={{ left: '-2px', filter: 'hue-rotate(90deg)' }}
                                 />
+                                {/* Cyan Channel Shift */}
+                                <img
+                                    src="/images/karpathy-glitch.png"
+                                    alt=""
+                                    className="absolute inset-0 w-full h-full object-cover mix-blend-screen opacity-80"
+                                    style={{ left: '2px', filter: 'hue-rotate(-90deg)' }}
+                                />
+                                {/* Main Glitch */}
+                                <img
+                                    src="/images/karpathy-glitch.png"
+                                    alt="Glitch"
+                                    className="absolute inset-0 w-full h-full object-cover mix-blend-normal opacity-100 scale-105"
+                                />
+                                {/* Scanlines */}
+                                <div className="absolute inset-0 bg-[linear-gradient(transparent_50%,rgba(0,0,0,0.5)_50%)] bg-[size:100%_4px] pointer-events-none opacity-50" />
+
+                                {/* Flash */}
+                                <div className="absolute inset-0 bg-red-500/10 mix-blend-overlay animate-pulse" />
                             </div>
                         </div>
 
-                        {/* Hover Ring */}
-                        <div
-                            className="absolute inset-0 rounded-full border border-red-500/50 transition-all duration-300 pointer-events-none"
-                            style={{
-                                opacity: isHovering ? 1 : 0,
-                                transform: isHovering ? 'scale(1.02)' : 'scale(1)'
-                            }}
-                        />
+                        {/* Glow Behind */}
+                        <div className={`absolute inset-0 rounded-full blur-[100px] transition-all duration-500 ${isHovering ? 'bg-red-600/20 scale-125' : 'bg-transparent scale-100'}`} />
+
                     </motion.div>
                 </div>
 
                 {/* CONTENT SIDE */}
-                <div className="text-center lg:text-left">
+                <div className="text-center lg:text-left relative z-20">
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
                     >
-                        <span className="text-red-500 font-mono text-sm uppercase tracking-[0.2em] mb-6 block">
+                        <span className="inline-block border-b border-red-500 pb-1 text-red-500 font-mono text-sm uppercase tracking-[0.3em] mb-8">
                             The Prophet
                         </span>
 
-                        <blockquote className="text-4xl md:text-6xl font-medium text-white leading-tight mb-8 tracking-tighter">
-                            "The hottest new programming language is <span className="text-white bg-red-600/20 px-2 italic">English</span>."
+                        <blockquote className="text-4xl md:text-6xl font-medium text-white leading-[1.1] mb-10 tracking-tight">
+                            "The hottest new programming language is <span className="relative inline-block">
+                                <span className="relative z-10 font-serif italic pr-4">English</span>
+                                <span className="absolute bottom-2 left-0 w-full h-3 bg-red-600 z-0 opacity-80 -rotate-1" />
+                            </span>."
                         </blockquote>
 
-                        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4">
-                            <div className="h-[1px] w-12 bg-white/20 mt-3 hidden lg:block" />
-                            <div>
-                                <p className="text-white text-lg font-bold">Andrej Karpathy</p>
-                                <p className="text-white/40 text-sm font-mono mt-1">Founding Member, OpenAI</p>
+                        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-5">
+                            <div className="w-16 h-1 bg-white/10 mt-3 rounded-full overflow-hidden">
+                                <div className="w-1/2 h-full bg-red-500" />
+                            </div>
+                            <div className="text-center lg:text-left">
+                                <p className="text-white text-xl font-bold tracking-wide">Andrej Karpathy</p>
+                                <p className="text-white/40 text-sm font-mono mt-1 uppercase tracking-wider">Founding Member, OpenAI</p>
                             </div>
                         </div>
                     </motion.div>
