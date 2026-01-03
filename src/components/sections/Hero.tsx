@@ -102,25 +102,35 @@ const Hero = () => {
                     </h1>
 
                     {/* WAITLIST BUTTON */}
-                    <Link to="/early-access">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 2.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                            className="pointer-events-auto mt-12 group relative flex items-center gap-4 px-9 py-4 bg-black/20 hover:bg-white/5 border border-white/10 rounded-full backdrop-blur-xl transition-all duration-500 hover:border-white/20 hover:scale-[1.02]"
+                    <div className="flex flex-col items-center gap-4 mt-12">
+                        <Link to="/early-access">
+                            <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                transition={{ delay: 2.2, duration: 1, type: "spring", stiffness: 100 }}
+                                className="group relative flex items-center gap-4 px-12 py-5 bg-white text-black rounded-full overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+                            >
+                                <span className="relative z-10 text-sm font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors duration-300">
+                                    Start Learning
+                                </span>
+                                <ArrowRight className="relative z-10 w-4 h-4 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+
+                                {/* Red Fill Effect */}
+                                <div className="absolute inset-0 bg-red-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
+                            </motion.button>
+                        </Link>
+
+                        <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.5 }}
+                            transition={{ delay: 3, duration: 1 }}
+                            className="text-xs font-mono uppercase tracking-widest text-white/50"
                         >
-                            <span className="text-xs font-bold tracking-[0.2em] uppercase text-white/70 group-hover:text-white transition-colors duration-300">
-                                Join Early Access
-                            </span>
-                            <ArrowRight className="w-3.5 h-3.5 text-white/50 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
-
-                            {/* Subtle glow on hover */}
-                            <div className="absolute inset-0 rounded-full ring-1 ring-white/5 group-hover:ring-white/20 transition-all duration-500" />
-
-                            {/* Inner gradient for glass feel */}
-                            <div className="absolute inset-0 rounded-full bg-gradient-to-t from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        </motion.div>
-                    </Link>
+                            100% Free Course • Open Source
+                        </motion.span>
+                    </div>
 
                 </motion.div>
             </section>
