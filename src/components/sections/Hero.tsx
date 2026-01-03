@@ -101,24 +101,24 @@ const Hero = () => {
                         </motion.div>
                     </h1>
 
-                    {/* WAITLIST BUTTON */}
-                    <div className="flex flex-col items-center gap-4 mt-12">
-                        <Link to="/early-access">
+                    {/* CTA BUTTON */}
+                    <div className="flex flex-col items-center gap-4 mt-12 pointer-events-auto">
+                        <Link to="/auth">
                             <motion.button
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                transition={{ delay: 2.2, duration: 1, type: "spring", stiffness: 100 }}
-                                className="group relative flex items-center gap-4 px-12 py-5 bg-white text-black rounded-full overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ delay: 2.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                                className="group relative flex items-center gap-4 px-12 py-5 bg-white text-black rounded-full overflow-hidden shadow-[0_0_60px_rgba(255,255,255,0.15)] hover:shadow-[0_0_80px_rgba(255,255,255,0.25)] transition-shadow duration-500"
                             >
-                                <span className="relative z-10 text-sm font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors duration-300">
+                                <span className="relative z-10 text-sm font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors duration-500">
                                     Start Learning
                                 </span>
-                                <ArrowRight className="relative z-10 w-4 h-4 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                                <ArrowRight className="relative z-10 w-4 h-4 group-hover:text-white group-hover:translate-x-1 transition-all duration-500" />
 
-                                {/* Red Fill Effect */}
-                                <div className="absolute inset-0 bg-red-600 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300 ease-in-out" />
+                                {/* Smooth Red Fill Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-500 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
                             </motion.button>
                         </Link>
 
@@ -128,7 +128,7 @@ const Hero = () => {
                             transition={{ delay: 3, duration: 1 }}
                             className="text-xs font-mono uppercase tracking-widest text-white/50"
                         >
-                            100% Free Course • Open Source
+                            Free Course
                         </motion.span>
                     </div>
 

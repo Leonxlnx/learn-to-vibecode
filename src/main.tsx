@@ -2,14 +2,14 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 import App from "./App.tsx";
-import EarlyAccess from "./pages/EarlyAccess.tsx";
+import Auth from "./pages/Auth.tsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} />
-      <Route path="/early-access" element={<EarlyAccess />} />
+      <Route path="/auth" element={<Auth />} />
     </Routes>
     <Toaster 
       position="top-center" 
