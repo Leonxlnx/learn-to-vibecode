@@ -80,10 +80,7 @@ const CardNav = ({
                         <img src={logo} alt={logoAlt} className="h-6 w-auto" />
                     ) : (
                         <div className="flex items-center gap-2">
-                            <div className="relative w-3 h-3 flex items-center justify-center">
-                                <div className="absolute inset-0 bg-white rounded-full opacity-20 group-hover:scale-150 transition-transform duration-500" />
-                                <div className="w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-                            </div>
+                            <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-6 h-6" />
                             <span className="font-bold tracking-tight text-white text-sm uppercase">Learn2Vibecode</span>
                         </div>
                     )}
@@ -172,14 +169,14 @@ const CardNav = ({
                 <div className="flex items-center ml-2">
                     {user ? (
                         <div className="relative">
-                            <button 
+                            <button
                                 onClick={() => setShowUserMenu(!showUserMenu)}
                                 className="relative overflow-hidden px-4 py-2 rounded-full bg-white/10 text-white text-[10px] font-bold uppercase tracking-widest border border-white/20 hover:border-white/40 transition-all duration-300 flex items-center gap-2"
                             >
                                 <User size={14} />
                                 <span className="max-w-[100px] truncate">{user.email?.split('@')[0]}</span>
                             </button>
-                            
+
                             <AnimatePresence>
                                 {showUserMenu && (
                                     <motion.div
@@ -212,7 +209,8 @@ const CardNav = ({
 
             {/* --- MOBILE NAV --- */}
             <div className="md:hidden fixed top-4 left-4 right-4 z-50 flex justify-between items-center p-3 px-5 rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-xl shadow-lg">
-                <Link to="/">
+                <Link to="/" className="flex items-center gap-2">
+                    <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-6 h-6" />
                     <span className="font-bold text-white text-sm tracking-tight uppercase">Learn2Vibecode</span>
                 </Link>
                 <button
@@ -275,7 +273,7 @@ const CardNav = ({
                                 <div className="w-full py-3 px-4 bg-white/5 text-white/70 font-medium rounded-xl text-center text-sm border border-white/10">
                                     {user.email}
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => {
                                         handleLogout();
                                         setIsMobileMenuOpen(false);

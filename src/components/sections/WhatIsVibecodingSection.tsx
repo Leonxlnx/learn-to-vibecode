@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Sparkles, Zap, Layout, Code2, ArrowRight } from 'lucide-react';
+import { Sparkles, Zap, Layout, Code2, GraduationCap, Lightbulb, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const TargetCard = ({ title, subtitle, desc, icon: Icon, delay }: any) => (
@@ -21,16 +21,12 @@ const TargetCard = ({ title, subtitle, desc, icon: Icon, delay }: any) => (
             <span className="text-red-500 font-mono text-xs uppercase tracking-widest mb-2 block">
                 {subtitle}
             </span>
-            <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
                 {title}
             </h3>
-            <p className="text-white/50 leading-relaxed mb-8 font-light">
+            <p className="text-white/50 leading-relaxed font-light">
                 {desc}
             </p>
-
-            <Link to="/auth" className="inline-flex items-center gap-2 text-white text-sm font-bold uppercase tracking-widest group-hover:gap-4 transition-all">
-                Read more <ArrowRight size={16} />
-            </Link>
         </div>
     </motion.div>
 );
@@ -52,26 +48,40 @@ const WhatIsVibecodingSection = () => {
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
 
-                {/* Header */}
+                {/* What is Vibecoding Explanation */}
                 <motion.div
                     style={{ y }}
                     className="text-center mb-32"
                 >
-                    <span className="inline-block border border-red-500/20 px-6 py-2 rounded-full bg-red-500/5 text-sm font-mono text-red-400 mb-8 uppercase tracking-[0.2em]">
-                        The New Standard
-                    </span>
                     <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
-                        MADE FOR <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">BUILDERS.</span>
+                        WHAT IS <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">VIBECODING?</span>
                     </h2>
-                    <p className="text-xl text-white/50 max-w-3xl mx-auto leading-relaxed font-light">
-                        Vibecoding is not a tool. It's a methodology. <br />
-                        It's the art of orchestrating AI to build software at the speed of thought.
+                    <p className="text-xl md:text-2xl text-white/60 max-w-4xl mx-auto leading-relaxed font-light mb-8">
+                        Vibecoding is the art of building software by orchestrating AI.
+                        Instead of writing every line, you <span className="text-white font-medium">think in logic</span>,
+                        describe what you need, and let AI handle the syntax.
+                        It's faster, cleaner, and way more fun.
+                    </p>
+                    <p className="text-lg text-white/40 max-w-3xl mx-auto">
+                        No more getting stuck on semicolons or CSS grids. Focus on what matters: the product.
                     </p>
                 </motion.div>
 
+
+                {/* Made for Builders Header */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-16"
+                >
+                    <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter">
+                        MADE FOR <span className="text-red-500">BUILDERS.</span>
+                    </h3>
+                </motion.div>
+
                 {/* Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <TargetCard
                         title="Entrepreneurs"
                         subtitle="Idea to App in 48h"
@@ -82,16 +92,37 @@ const WhatIsVibecodingSection = () => {
                     <TargetCard
                         title="Junior Devs"
                         subtitle="Skip Junior Hell"
-                        desc="Don't just write functions. Architect systems. Become the 10x developer that everyone wants to hire."
+                        desc="Don't just write functions. Architect systems. Become the developer that everyone wants to hire."
                         icon={Code2}
-                        delay={0.2}
+                        delay={0.15}
                     />
                     <TargetCard
                         title="Designers & PMs"
                         subtitle="Make it Real"
                         desc="Stop handing off Figma files. Build the actual product and show them exactly how it should work."
                         icon={Layout}
+                        delay={0.2}
+                    />
+                    <TargetCard
+                        title="Teachers"
+                        subtitle="Teach the Future"
+                        desc="Prepare your students for the real world. Show them how modern software is actually built."
+                        icon={GraduationCap}
+                        delay={0.25}
+                    />
+                    <TargetCard
+                        title="Learners"
+                        subtitle="Start from Zero"
+                        desc="No coding background? No problem. If you can think logically, you can build software."
+                        icon={Lightbulb}
                         delay={0.3}
+                    />
+                    <TargetCard
+                        title="Creators"
+                        subtitle="Ship Your Ideas"
+                        desc="Turn your creative vision into real products. No more waiting for developers."
+                        icon={Zap}
+                        delay={0.35}
                     />
                 </div>
 

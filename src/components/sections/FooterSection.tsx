@@ -1,10 +1,13 @@
 import { Link } from 'react-router-dom';
 
+/**
+ * Footer Section - Single, clean, rounded corners
+ */
 const FooterSection = () => {
     return (
-        <footer className="w-full bg-[#030303] border-t border-white/5 py-16 px-6 relative overflow-hidden">
-            {/* Background */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]" />
+        <footer className="w-full bg-[#080808] rounded-t-[3rem] py-16 px-6 relative overflow-hidden mt-[-2rem]">
+            {/* Noise */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
 
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12 relative z-10">
 
@@ -15,8 +18,8 @@ const FooterSection = () => {
                         <span className="text-white font-bold text-xl tracking-tight">Learn2Vibecode</span>
                     </Link>
                     <p className="text-white/40 text-sm max-w-xs font-light">
-                        The art of orchestrating logic.<br />
-                        Building the future, one prompt at a time.
+                        The art of building with AI.<br />
+                        From idea to product, faster.
                     </p>
                 </div>
 
@@ -38,9 +41,9 @@ const FooterSection = () => {
 
             </div>
 
-            <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 flex justify-between items-center text-xs text-white/20 font-mono uppercase tracking-widest">
+            <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/20 font-mono uppercase tracking-widest relative z-10">
                 <span>© 2026 VibeCode</span>
-                <span>All Systems Nominal</span>
+                <span>Built with AI</span>
             </div>
         </footer>
     );

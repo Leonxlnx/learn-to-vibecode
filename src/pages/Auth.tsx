@@ -168,14 +168,13 @@ const Auth = () => {
 
           {/* Form Header */}
           <div className="text-center mb-10">
-            <div className="inline-block p-1 rounded-full bg-white/5 border border-white/5 p-1 mb-8">
+            <div className="inline-block rounded-full bg-white/5 border border-white/5 p-1 mb-8">
               <div className="flex relative">
                 {/* Slider Backdrop */}
                 <motion.div
-                  layoutId="auth-toggle"
-                  className="absolute inset-y-0 w-1/2 bg-white rounded-full shadow-lg"
+                  className="absolute top-0 bottom-0 w-1/2 bg-white rounded-full shadow-lg"
                   initial={false}
-                  animate={{ x: isLogin ? 0 : '100%' }}
+                  animate={{ left: isLogin ? '0%' : '50%' }}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
                 <button onClick={() => setIsLogin(true)} className={`relative z-10 px-10 py-3 text-xs font-bold uppercase tracking-wider transition-colors ${isLogin ? 'text-black' : 'text-white/50 hover:text-white'}`}>Login</button>
