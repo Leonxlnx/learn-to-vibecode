@@ -23,6 +23,7 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -68,7 +69,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-white/20 border-t-red-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -97,19 +98,19 @@ const Dashboard = () => {
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-900/5 blur-[150px] rounded-full" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/5 blur-[150px] rounded-full" />
       </div>
 
       {/* Sidebar */}
       <Sidebar onLogout={handleLogout} userName={userName} />
 
-      {/* Main Content */}
-      <main className="ml-[240px] min-h-screen p-8 lg:p-12 relative z-10">
-        <div className="max-w-5xl">
+      {/* Main Content - responsive margin */}
+      <main className="ml-[72px] lg:ml-[240px] min-h-screen transition-all duration-200">
+        <div className="p-6 lg:p-10 max-w-5xl">
           {activePage === 'home' && (
             <DashboardHome userName={userName} learningPath={learningPath} />
           )}
-          {activePage === 'course' && <DashboardCourse />}
+          {activePage === 'course' && <DashboardCourse learningPath={learningPath} />}
           {activePage === 'projects' && <DashboardProjects />}
           {activePage === 'resources' && <DashboardResources />}
           {activePage === 'settings' && (

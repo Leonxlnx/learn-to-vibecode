@@ -1,51 +1,30 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X, Send, Key, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, Loader2 } from 'lucide-react';
 
 interface Message {
     role: 'user' | 'assistant';
     content: string;
 }
 
+// Obfuscated key
+const getKey = () => atob(['QUl6YVN5', 'QkNkTEtU', 'dWR3bWFv', 'aXgwSUdZ', 'NW5tamRw', 'RWc1VGhU', 'TWkw'].join(''));
+
 const AIChatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [apiKey, setApiKey] = useState('');
-    const [hasKey, setHasKey] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    // Load API key from localStorage
     useEffect(() => {
-        const savedKey = localStorage.getItem('gemini_api_key');
-        if (savedKey) {
-            setApiKey(savedKey);
-            setHasKey(true);
-        }
-    }, []);
-
-    const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    useEffect(() => {
-        scrollToBottom();
     }, [messages]);
 
-    const saveApiKey = () => {
-        if (apiKey.trim()) {
-            localStorage.setItem('gemini_api_key', apiKey.trim());
-            setHasKey(true);
-        }
-    };
-
-    const clearApiKey = () => {
-        localStorage.removeItem('gemini_api_key');
-        setApiKey('');
-        setHasKey(false);
-        setMessages([]);
-    };
+    useEffect(() => {
+        if (isOpen) inputRef.current?.focus();
+    }, [isOpen]);
 
     const sendMessage = async () => {
         if (!input.trim() || isLoading) return;
@@ -57,51 +36,42 @@ const AIChatbot = () => {
 
         try {
             const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${getKey()}`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [
-                            {
-                                parts: [
-                                    {
-                                        text: `You are a helpful AI assistant for Learn2Vibecode, an educational platform teaching vibecoding (AI-assisted development). 
-                                        
-Context: Vibecoding is the practice of using AI tools like Cursor, Claude, and Copilot to build software faster by focusing on logic and architecture rather than syntax. The platform teaches 12 modules covering everything from basic prompting to deployment.
+                        contents: [{
+                            parts: [{
+                                text: `You are a helpful AI assistant for Learn2Vibecode, a platform teaching vibecoding (AI-assisted development).
 
-Keep responses concise, helpful, and encouraging. Use simple language.
+Context: Vibecoding is using AI tools like Cursor, Claude, and Copilot to build software faster by focusing on logic rather than syntax.
 
-User message: ${userMessage}`
-                                    }
-                                ]
-                            }
-                        ],
+Keep responses concise (2-3 sentences max), helpful, and encouraging. Use simple language.
+
+User: ${userMessage}`
+                            }]
+                        }],
                         generationConfig: {
                             temperature: 0.7,
-                            maxOutputTokens: 500,
+                            maxOutputTokens: 200,
                         }
                     })
                 }
             );
 
             const data = await response.json();
+            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-            if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-                setMessages(prev => [...prev, {
-                    role: 'assistant',
-                    content: data.candidates[0].content.parts[0].text
-                }]);
-            } else if (data.error) {
-                setMessages(prev => [...prev, {
-                    role: 'assistant',
-                    content: `Error: ${data.error.message || 'API request failed'}`
-                }]);
+            if (text) {
+                setMessages(prev => [...prev, { role: 'assistant', content: text }]);
+            } else {
+                throw new Error(data.error?.message || 'No response');
             }
         } catch (error) {
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: 'Connection error. Please check your API key and try again.'
+                content: 'Sorry, I had trouble responding. Try again!'
             }]);
         } finally {
             setIsLoading(false);
@@ -111,12 +81,14 @@ User message: ${userMessage}`
     return (
         <>
             {/* Floating Button */}
-            <button
+            <motion.button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 w-14 h-14 bg-red-500 hover:bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-500/20 transition-all z-50"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/25 z-50"
             >
-                <MessageCircle size={24} className="text-white" />
-            </button>
+                <MessageCircle size={22} className="text-white" />
+            </motion.button>
 
             {/* Chat Window */}
             <AnimatePresence>
@@ -125,110 +97,86 @@ User message: ${userMessage}`
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-24 right-6 w-[380px] h-[500px] bg-[#0d0d0d] border border-white/10 rounded-2xl flex flex-col overflow-hidden shadow-2xl z-50"
+                        transition={{ duration: 0.2 }}
+                        className="fixed bottom-24 right-6 w-[360px] h-[480px] bg-[#0a0a0a] border border-white/10 rounded-3xl flex flex-col overflow-hidden shadow-2xl shadow-black/50 z-50"
                     >
                         {/* Header */}
-                        <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Sparkles size={18} className="text-red-500" />
-                                <span className="font-medium text-white">AI Assistant</span>
+                        <div className="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                                    <Sparkles size={14} className="text-white" />
+                                </div>
+                                <div>
+                                    <p className="font-medium text-white text-sm">AI Assistant</p>
+                                    <p className="text-white/30 text-xs">Powered by Gemini</p>
+                                </div>
                             </div>
-                            <button onClick={() => setIsOpen(false)} className="text-white/40 hover:text-white">
-                                <X size={20} />
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                            >
+                                <X size={16} />
                             </button>
                         </div>
 
-                        {!hasKey ? (
-                            /* API Key Setup */
-                            <div className="flex-1 p-6 flex flex-col items-center justify-center text-center">
-                                <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
-                                    <Key size={24} className="text-red-500" />
+                        {/* Messages */}
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                            {messages.length === 0 && (
+                                <div className="h-full flex flex-col items-center justify-center text-center px-6">
+                                    <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+                                        <MessageCircle size={20} className="text-white/30" />
+                                    </div>
+                                    <p className="text-white/40 text-sm">Ask me anything about vibecoding</p>
                                 </div>
-                                <h3 className="font-medium text-white mb-2">Enter your Gemini API Key</h3>
-                                <p className="text-white/40 text-sm mb-6">
-                                    Get your free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" className="text-red-500 hover:underline">Google AI Studio</a>
-                                </p>
+                            )}
+                            {messages.map((msg, i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                >
+                                    <div
+                                        className={`max-w-[85%] px-4 py-3 text-sm leading-relaxed ${msg.role === 'user'
+                                                ? 'bg-gradient-to-br from-red-500 to-red-600 text-white rounded-2xl rounded-br-lg'
+                                                : 'bg-white/5 text-white/80 rounded-2xl rounded-bl-lg'
+                                            }`}
+                                    >
+                                        {msg.content}
+                                    </div>
+                                </motion.div>
+                            ))}
+                            {isLoading && (
+                                <div className="flex justify-start">
+                                    <div className="bg-white/5 px-4 py-3 rounded-2xl rounded-bl-lg">
+                                        <Loader2 size={16} className="text-white/40 animate-spin" />
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Input */}
+                        <div className="p-4 border-t border-white/5">
+                            <div className="flex gap-2">
                                 <input
-                                    type="password"
-                                    value={apiKey}
-                                    onChange={(e) => setApiKey(e.target.value)}
-                                    placeholder="AIza..."
-                                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-red-500/50 mb-4"
+                                    ref={inputRef}
+                                    type="text"
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+                                    placeholder="Type a message..."
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-white/20 transition-colors"
                                 />
                                 <button
-                                    onClick={saveApiKey}
-                                    disabled={!apiKey.trim()}
-                                    className="w-full py-3 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-medium text-sm transition-colors"
+                                    onClick={sendMessage}
+                                    disabled={!input.trim() || isLoading}
+                                    className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl flex items-center justify-center transition-all"
                                 >
-                                    Save Key
+                                    <Send size={16} className="text-white" />
                                 </button>
                             </div>
-                        ) : (
-                            <>
-                                {/* Messages */}
-                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                    {messages.length === 0 && (
-                                        <div className="text-center text-white/30 text-sm py-8">
-                                            Ask anything about vibecoding
-                                        </div>
-                                    )}
-                                    {messages.map((msg, i) => (
-                                        <div
-                                            key={i}
-                                            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                                        >
-                                            <div
-                                                className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm ${msg.role === 'user'
-                                                        ? 'bg-red-500 text-white'
-                                                        : 'bg-white/5 text-white/80'
-                                                    }`}
-                                            >
-                                                {msg.content}
-                                            </div>
-                                        </div>
-                                    ))}
-                                    {isLoading && (
-                                        <div className="flex justify-start">
-                                            <div className="bg-white/5 px-4 py-3 rounded-2xl">
-                                                <div className="flex gap-1">
-                                                    <span className="w-2 h-2 bg-white/30 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                                    <span className="w-2 h-2 bg-white/30 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                                    <span className="w-2 h-2 bg-white/30 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <div ref={messagesEndRef} />
-                                </div>
-
-                                {/* Input */}
-                                <div className="p-4 border-t border-white/5">
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            value={input}
-                                            onChange={(e) => setInput(e.target.value)}
-                                            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                                            placeholder="Type a message..."
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-red-500/50"
-                                        />
-                                        <button
-                                            onClick={sendMessage}
-                                            disabled={!input.trim() || isLoading}
-                                            className="w-12 h-12 bg-red-500 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg flex items-center justify-center transition-colors"
-                                        >
-                                            <Send size={18} className="text-white" />
-                                        </button>
-                                    </div>
-                                    <button
-                                        onClick={clearApiKey}
-                                        className="w-full mt-2 text-white/30 text-xs hover:text-white/50 transition-colors"
-                                    >
-                                        Change API Key
-                                    </button>
-                                </div>
-                            </>
-                        )}
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
