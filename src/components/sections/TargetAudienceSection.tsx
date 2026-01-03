@@ -1,125 +1,71 @@
 import { motion } from 'framer-motion';
 import { Rocket, Code2, Palette, ArrowUpRight } from 'lucide-react';
 
-interface AudienceCardProps {
-    icon: React.ReactNode;
-    title: string;
-    tagline: string;
-    description: string;
-    index: number;
-    gradient: string;
-}
-
-const AudienceCard = ({ icon, title, tagline, description, index, gradient }: AudienceCardProps) => {
+const AudienceCard = ({ icon, title, tagline, description, index }: any) => {
     return (
         <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
             className="group relative"
         >
-            {/* Glow effect */}
-            <div className={`absolute -inset-1 rounded-3xl bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-30 blur-xl transition-opacity duration-500`} />
+            <div className="relative h-full bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-red-500/30 hover:bg-[#0f0f0f] transition-all duration-500 flex flex-col items-start">
 
-            {/* Card */}
-            <div className="relative h-full rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] backdrop-blur-xl p-8 overflow-hidden transition-all duration-500 group-hover:border-white/20 group-hover:translate-y-[-4px]">
-
-                {/* Background gradient on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-
-                {/* Icon */}
-                <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-6 shadow-lg`}>
+                <div className="mb-6 p-4 rounded-xl bg-white/5 group-hover:bg-red-500/10 transition-colors duration-500">
                     {icon}
                 </div>
 
-                {/* Title */}
-                <h3 className="relative text-2xl font-bold text-white mb-3 tracking-tight">
-                    {title}
-                </h3>
+                <h3 className="text-xl font-bold text-white mb-2">{title}</h3>
+                <p className="text-sm font-mono text-red-500 mb-6 uppercase tracking-wider opacity-80">{tagline}</p>
 
-                {/* Tagline */}
-                <p className={`relative text-lg font-semibold bg-gradient-to-r ${gradient} bg-clip-text text-transparent mb-4`}>
-                    {tagline}
-                </p>
-
-                {/* Description */}
-                <p className="relative text-white/50 leading-relaxed mb-6">
+                <p className="text-white/50 leading-relaxed text-sm mb-8 flex-grow">
                     {description}
                 </p>
 
-                {/* Link */}
-                <div className="relative flex items-center gap-2 text-white/40 group-hover:text-white/70 transition-colors duration-300">
-                    <span className="text-sm font-medium">Learn more</span>
-                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/30 group-hover:text-white transition-colors">
+                    <span>Read more</span>
+                    <ArrowUpRight className="w-3 h-3" />
                 </div>
 
-                {/* Corner decoration */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-white/5 to-transparent rounded-bl-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </div>
         </motion.div>
     );
 };
 
-/**
- * Target Audience Section - Who is this for?
- * Features 3 premium glass cards for different audiences
- */
 const TargetAudienceSection = () => {
     const audiences = [
         {
-            icon: <Rocket className="w-7 h-7 text-white" />,
+            icon: <Rocket className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />,
             title: "Entrepreneurs",
-            tagline: "Idea to App in 48h.",
-            description: "No more waiting for tech co-founders. No more burning cash on agencies. Build your MVP yourself and iterate at the speed of thought.",
-            gradient: "from-orange-500 to-rose-500",
+            tagline: "Idea to App in 48h",
+            description: "Stop funding agencies. Build your own MVP this weekend and iterate instantly based on feedback.",
         },
         {
-            icon: <Code2 className="w-7 h-7 text-white" />,
+            icon: <Code2 className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />,
             title: "Junior Devs",
-            tagline: "Skip the Junior Hell.",
-            description: "Stop grinding tutorials for years. Learn to architect systems, not just write code. Become the developer who ships, not the one who studies.",
-            gradient: "from-purple-500 to-indigo-500",
+            tagline: "Skip Junior Hell",
+            description: "Don't just write functions. Architect systems. Become the 10x developer that everyone wants to hire.",
         },
         {
-            icon: <Palette className="w-7 h-7 text-white" />,
-            title: "PMs & Designers",
-            tagline: "Build Your Prototypes.",
-            description: "Stop handing off Figma files and hoping for the best. Make it real. Ship it yourself. Then show the devs how it's done.",
-            gradient: "from-emerald-500 to-cyan-500",
+            icon: <Palette className="w-6 h-6 text-white group-hover:text-red-500 transition-colors" />,
+            title: "Designers & PMs",
+            tagline: "Make it Real",
+            description: "Stop handing off Figma files. Build the actual product and show them exactly how it should work.",
         },
     ];
 
     return (
-        <section className="relative w-full py-32 px-4 md:px-12 bg-[#050505] overflow-hidden">
+        <section className="w-full py-32 px-6 bg-[#050505] flex justify-center">
+            <div className="max-w-7xl w-full">
 
-            {/* Background decoration */}
-            <div className="absolute inset-0">
-                <div className="absolute top-1/4 left-0 w-96 h-96 bg-purple-500/10 rounded-full blur-[128px]" />
-                <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-[128px]" />
-            </div>
-
-            <div className="relative z-10 max-w-7xl mx-auto">
-
-                {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-20"
-                >
-                    <span className="inline-block px-4 py-2 mb-6 text-xs font-mono uppercase tracking-[0.3em] text-white/40 border border-white/10 rounded-full">
-                        Who is this for?
-                    </span>
-                    <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight mb-6">
-                        Made for <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">builders</span>
+                <div className="text-center mb-20">
+                    <span className="text-white/30 font-mono text-xs uppercase tracking-[0.2em] mb-4 block">Target Audience</span>
+                    <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                        Made for <span className="border-b-2 border-red-500 text-white">Builders</span>.
                     </h2>
-                    <p className="text-white/50 text-xl max-w-2xl mx-auto">
-                        Whether you're starting fresh or leveling up, vibe coding meets you where you are.
-                    </p>
-                </motion.div>
+                </div>
 
-                {/* Cards grid */}
                 <div className="grid md:grid-cols-3 gap-6">
                     {audiences.map((audience, index) => (
                         <AudienceCard key={index} {...audience} index={index} />

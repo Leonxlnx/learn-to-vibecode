@@ -5,6 +5,11 @@ import TheShiftSection from '@/components/sections/TheShiftSection';
 import ProphetSection from '@/components/sections/ProphetSection';
 import TargetAudienceSection from '@/components/sections/TargetAudienceSection';
 import VibeStackSection from '@/components/sections/VibeStackSection';
+import StatsGridSection from '@/components/sections/StatsGridSection';
+import CommunitySection from '@/components/sections/CommunitySection';
+import CurriculumSection from '@/components/sections/CurriculumSection';
+import CTASection from '@/components/sections/CTASection';
+import FooterSection from '@/components/sections/FooterSection';
 
 /**
  * Main App component for Learn2Vibecode landing page
@@ -107,6 +112,11 @@ const App = () => {
       <ProphetSection />
       <TargetAudienceSection />
       <VibeStackSection />
+      <StatsGridSection />
+      <CommunitySection />
+      <CurriculumSection />
+      <CTASection />
+      <FooterSection />
     </main>
   );
 };

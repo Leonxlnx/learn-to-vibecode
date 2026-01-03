@@ -1,168 +1,105 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 /**
  * Prophet Section - Andrej Karpathy Quote
- * Features liquid hover effect revealing glitch image
+ * Refined Liquid Glitch on Hover (Cleaner implementation)
  */
 const ProphetSection = () => {
-    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [maskPos, setMaskPos] = useState({ x: 50, y: 50 });
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        const rect = e.currentTarget.getBoundingClientRect();
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
-        setMousePosition({ x, y });
+        setMaskPos({ x, y });
     };
 
     return (
-        <section className="relative w-full min-h-screen bg-[#030303] py-32 px-4 md:px-12 overflow-hidden">
+        <section className="relative w-full py-32 px-6 bg-[#050505] flex items-center justify-center overflow-hidden">
 
-            {/* Subtle gradient background */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#050505] via-[#030303] to-[#050505]" />
+            <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-20 items-center">
 
-            {/* Noise texture overlay */}
-            <div className="absolute inset-0 opacity-[0.03]" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-            }} />
-
-            <div className="relative z-10 max-w-6xl mx-auto">
-
-                {/* Section label */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-16"
-                >
-                    <span className="text-xs font-mono uppercase tracking-[0.3em] text-white/40">
-                        The Prophet
-                    </span>
-                </motion.div>
-
-                {/* Main content grid */}
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
-
-                    {/* Image with liquid hover effect */}
+                {/* IMAGE SIDE */}
+                <div className="flex justify-center lg:justify-end">
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                        className="relative aspect-square max-w-md mx-auto lg:mx-0"
-                        onMouseMove={handleMouseMove}
+                        ref={containerRef}
+                        className="relative w-[400px] h-[400px] rounded-full cursor-none"
                         onMouseEnter={() => setIsHovering(true)}
                         onMouseLeave={() => setIsHovering(false)}
+                        onMouseMove={handleMouseMove}
                     >
-                        {/* Glow effect */}
-                        <div className="absolute -inset-8 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 rounded-full blur-3xl opacity-50" />
+                        {/* Main Image Container */}
+                        <div className="relative w-full h-full rounded-full overflow-hidden border border-white/10 bg-[#111]">
 
-                        {/* Container with mask */}
-                        <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white/10 shadow-2xl">
-
-                            {/* Base image - Normal */}
+                            {/* Normal Image */}
                             <img
                                 src="/images/karpathy-normal.png"
                                 alt="Andrej Karpathy"
-                                className="absolute inset-0 w-full h-full object-cover"
+                                className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 transition-opacity duration-500"
                             />
 
-                            {/* Overlay image - Glitch (revealed on hover with liquid mask) */}
+                            {/* Glitch Overlay (Revealed by Mask) */}
                             <div
-                                className="absolute inset-0 transition-opacity duration-300"
+                                className="absolute inset-0 w-full h-full bg-red-900/20 mix-blend-overlay"
                                 style={{
                                     opacity: isHovering ? 1 : 0,
-                                    maskImage: isHovering
-                                        ? `radial-gradient(circle 150px at ${mousePosition.x}% ${mousePosition.y}%, black 0%, transparent 100%)`
-                                        : 'none',
-                                    WebkitMaskImage: isHovering
-                                        ? `radial-gradient(circle 150px at ${mousePosition.x}% ${mousePosition.y}%, black 0%, transparent 100%)`
-                                        : 'none',
+                                    maskImage: `radial-gradient(circle 120px at ${maskPos.x}% ${maskPos.y}%, black, transparent)`,
+                                    WebkitMaskImage: `radial-gradient(circle 120px at ${maskPos.x}% ${maskPos.y}%, black, transparent)`,
+                                    transition: 'opacity 0.2s ease-out'
                                 }}
                             >
                                 <img
                                     src="/images/karpathy-glitch.png"
-                                    alt="Andrej Karpathy Glitch"
-                                    className="w-full h-full object-cover"
+                                    alt="Karpathy Glitch"
+                                    className="absolute inset-0 w-full h-full object-cover mix-blend-hard-light scale-105"
                                 />
                             </div>
-
-                            {/* Liquid border effect on hover */}
-                            <motion.div
-                                className="absolute inset-0 rounded-full pointer-events-none"
-                                animate={{
-                                    boxShadow: isHovering
-                                        ? `0 0 60px rgba(168, 85, 247, 0.4), inset 0 0 60px rgba(168, 85, 247, 0.1)`
-                                        : `0 0 0px rgba(168, 85, 247, 0), inset 0 0 0px rgba(168, 85, 247, 0)`
-                                }}
-                                transition={{ duration: 0.3 }}
-                            />
                         </div>
 
-                        {/* Floating particles around image */}
-                        {[...Array(6)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute w-2 h-2 bg-white/30 rounded-full"
-                                style={{
-                                    left: `${20 + Math.random() * 60}%`,
-                                    top: `${20 + Math.random() * 60}%`,
-                                }}
-                                animate={{
-                                    y: [0, -20, 0],
-                                    opacity: [0.3, 0.8, 0.3],
-                                }}
-                                transition={{
-                                    duration: 3 + Math.random() * 2,
-                                    repeat: Infinity,
-                                    delay: Math.random() * 2,
-                                }}
-                            />
-                        ))}
-                    </motion.div>
-
-                    {/* Quote content */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-center lg:text-left"
-                    >
-                        {/* Quote mark */}
-                        <div className="text-8xl font-serif text-white/10 leading-none mb-4">"</div>
-
-                        {/* Quote text */}
-                        <blockquote className="text-3xl md:text-5xl font-medium text-white leading-tight mb-8 tracking-tight">
-                            The hottest new programming language is{' '}
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400">
-                                English.
-                            </span>
-                        </blockquote>
-
-                        {/* Attribution */}
-                        <div className="flex items-center gap-4 justify-center lg:justify-start">
-                            <div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-                            <div>
-                                <p className="text-white font-semibold">Andrej Karpathy</p>
-                                <p className="text-white/50 text-sm">Former Director of AI at Tesla, OpenAI</p>
-                            </div>
-                        </div>
-
-                        {/* Additional context */}
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            whileInView={{ opacity: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.5 }}
-                            className="mt-12 text-white/40 text-lg leading-relaxed max-w-lg"
-                        >
-                            The era of vibe coding is here. No more gatekeeping.
-                            No more years of syntax memorization. Just describe what you want to build.
-                        </motion.p>
+                        {/* Hover Ring */}
+                        <div
+                            className="absolute inset-0 rounded-full border border-red-500/50 transition-all duration-300 pointer-events-none"
+                            style={{
+                                opacity: isHovering ? 1 : 0,
+                                transform: isHovering ? 'scale(1.02)' : 'scale(1)'
+                            }}
+                        />
                     </motion.div>
                 </div>
+
+                {/* CONTENT SIDE */}
+                <div className="text-center lg:text-left">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <span className="text-red-500 font-mono text-sm uppercase tracking-[0.2em] mb-6 block">
+                            The Prophet
+                        </span>
+
+                        <blockquote className="text-4xl md:text-6xl font-medium text-white leading-tight mb-8 tracking-tighter">
+                            "The hottest new programming language is <span className="text-white bg-red-600/20 px-2 italic">English</span>."
+                        </blockquote>
+
+                        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4">
+                            <div className="h-[1px] w-12 bg-white/20 mt-3 hidden lg:block" />
+                            <div>
+                                <p className="text-white text-lg font-bold">Andrej Karpathy</p>
+                                <p className="text-white/40 text-sm font-mono mt-1">Founding Member, OpenAI</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+
             </div>
         </section>
     );

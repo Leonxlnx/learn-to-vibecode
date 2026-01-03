@@ -1,12 +1,10 @@
-import { useRef, Suspense } from 'react';
+import { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { ArrowRight, Zap, Code, Rocket } from 'lucide-react';
-import WireframeWave from '@/components/3d/WireframeWave';
+import { ArrowRight, Zap, Rocket } from 'lucide-react';
 
 /**
  * The Shift Section - Before/After Comparison
- * Shows the transformation from traditional coding to vibe coding
+ * Refined Minimalist Design (Red/Black/White)
  */
 const TheShiftSection = () => {
     const containerRef = useRef(null);
@@ -17,116 +15,111 @@ const TheShiftSection = () => {
 
     const smoothProgress = useSpring(scrollYProgress, { damping: 20, stiffness: 70 });
 
-    // Before state animations
+    // Animations
     const opacityBefore = useTransform(smoothProgress, [0.05, 0.2, 0.35], [0, 1, 0]);
     const yBefore = useTransform(smoothProgress, [0.05, 0.35], [80, -80]);
     const scaleBefore = useTransform(smoothProgress, [0.05, 0.2, 0.35], [0.9, 1, 0.95]);
 
-    // Transition text
     const opacityTransition = useTransform(smoothProgress, [0.4, 0.5, 0.6], [0, 1, 0]);
 
-    // After state animations
     const opacityAfter = useTransform(smoothProgress, [0.65, 0.8, 0.9], [0, 1, 0]);
     const yAfter = useTransform(smoothProgress, [0.65, 0.9], [60, -40]);
     const scaleAfter = useTransform(smoothProgress, [0.65, 0.8], [0.95, 1]);
 
-    // Final CTA
     const opacityFinal = useTransform(smoothProgress, [0.88, 0.98], [0, 1]);
     const scaleFinal = useTransform(smoothProgress, [0.88, 1], [0.9, 1]);
 
     return (
-        <section ref={containerRef} className="relative w-full h-[500vh] bg-[#050505] z-10">
+        <section ref={containerRef} className="relative w-full h-[500vh] bg-[#050505] z-10 selection:bg-red-500/30">
 
             {/* Sticky Container */}
-            <div className="sticky top-0 h-screen w-full overflow-hidden">
+            <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
 
-                {/* Three.js Particle Background */}
-                <div className="absolute inset-0 z-0 opacity-40">
-                    <Canvas camera={{ position: [0, 0, 5], fov: 60 }} gl={{ alpha: true }}>
-                        <Suspense fallback={null}>
-                            <WireframeWave />
-                        </Suspense>
-                    </Canvas>
-                </div>
+                {/* Minimal Grid Background */}
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-                {/* Content */}
-                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none px-6">
+                <div className="relative z-10 px-6 max-w-7xl w-full flex flex-col items-center">
 
-                    {/* BEFORE - The Old Way */}
+                    {/* BEFORE */}
                     <motion.div
                         style={{ opacity: opacityBefore, y: yBefore, scale: scaleBefore }}
-                        className="absolute text-center max-w-5xl"
+                        className="absolute text-center"
                     >
-                        <div className="inline-block px-4 py-2 mb-8 rounded-full border border-red-500/30 bg-red-500/10">
-                            <span className="text-red-400 text-sm font-mono uppercase tracking-widest">The Old Way</span>
+                        <div className="inline-block px-4 py-1.5 mb-8 border border-white/10 rounded-full bg-white/5 backdrop-blur-sm">
+                            <span className="text-white/40 text-xs font-mono uppercase tracking-[0.2em]">The Old Way</span>
                         </div>
-                        <h2 className="text-5xl md:text-8xl font-black text-white/90 leading-[0.9] tracking-tight mb-8">
-                            Months learning<br />
-                            <span className="text-white/40">frameworks.</span>
+
+                        <h2 className="text-5xl md:text-8xl font-black text-white/20 leading-[0.9] tracking-tighter mb-8 font-display">
+                            Months <br />
+                            learning <br />
+                            syntax.
                         </h2>
-                        <div className="flex flex-wrap justify-center gap-4 text-white/50 font-mono text-sm">
-                            <span className="px-4 py-2 bg-white/5 rounded-lg border border-white/10">6+ months bootcamp</span>
-                            <span className="px-4 py-2 bg-white/5 rounded-lg border border-white/10">$15k+ courses</span>
-                            <span className="px-4 py-2 bg-white/5 rounded-lg border border-white/10">Tutorial hell</span>
+
+                        <div className="flex flex-wrap justify-center gap-3 text-white/30 font-mono text-xs uppercase tracking-wider">
+                            <span className="border-b border-white/10 pb-1">Tutorial Hell</span>
+                            <span className="text-white/10">•</span>
+                            <span className="border-b border-white/10 pb-1">Expensive Bootcamps</span>
+                            <span className="text-white/10">•</span>
+                            <span className="border-b border-white/10 pb-1">Burnout</span>
                         </div>
                     </motion.div>
 
-                    {/* TRANSITION - The Shift */}
+                    {/* TRANSITION */}
                     <motion.div
                         style={{ opacity: opacityTransition }}
                         className="absolute text-center"
                     >
+                        <div className="w-[1px] h-32 bg-gradient-to-b from-transparent via-red-500 to-transparent mx-auto mb-8" />
                         <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="w-32 h-32 mx-auto mb-8 rounded-full border border-white/20 flex items-center justify-center"
+                            animate={{ opacity: [0.5, 1, 0.5] }}
+                            transition={{ duration: 2, repeat: Infinity }}
                         >
-                            <Zap className="w-12 h-12 text-white" />
+                            <Zap className="w-12 h-12 text-red-500 mx-auto mb-4" />
                         </motion.div>
-                        <h2 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-orange-400 uppercase tracking-tight">
+                        <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
                             The Shift
                         </h2>
                     </motion.div>
 
-                    {/* AFTER - The New Way */}
+                    {/* AFTER */}
                     <motion.div
                         style={{ opacity: opacityAfter, y: yAfter, scale: scaleAfter }}
-                        className="absolute text-center max-w-5xl"
+                        className="absolute text-center"
                     >
-                        <div className="inline-block px-4 py-2 mb-8 rounded-full border border-emerald-500/30 bg-emerald-500/10">
-                            <span className="text-emerald-400 text-sm font-mono uppercase tracking-widest">The New Way</span>
+                        <div className="inline-block px-4 py-1.5 mb-8 border border-red-500/30 rounded-full bg-red-500/10 backdrop-blur-sm">
+                            <span className="text-red-500 text-xs font-mono uppercase tracking-[0.2em] animate-pulse">The New Way</span>
                         </div>
-                        <h2 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tight mb-8">
-                            Ship your MVP<br />
-                            <span className="text-emerald-400">in 48 hours.</span>
+
+                        <h2 className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-8 font-display">
+                            Ship in <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50">48 hours.</span>
                         </h2>
-                        <div className="flex flex-wrap justify-center gap-4 text-white/70 font-mono text-sm">
-                            <span className="px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-emerald-400">AI-powered</span>
-                            <span className="px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-emerald-400">Free course</span>
-                            <span className="px-4 py-2 bg-emerald-500/10 rounded-lg border border-emerald-500/30 text-emerald-400">Real projects</span>
+
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <span className="px-4 py-2 bg-[#111] border border-white/10 rounded text-sm text-white/80">AI-First</span>
+                            <span className="px-4 py-2 bg-[#111] border border-white/10 rounded text-sm text-white/80">Natural Language</span>
+                            <span className="px-4 py-2 bg-[#111] border border-white/10 rounded text-sm text-white/80">Production Ready</span>
                         </div>
                     </motion.div>
 
                     {/* FINAL CTA */}
                     <motion.div
                         style={{ opacity: opacityFinal, scale: scaleFinal }}
-                        className="absolute text-center max-w-3xl w-full pointer-events-auto px-4"
+                        className="absolute text-center max-w-4xl w-full"
                     >
-                        <div className="group relative rounded-[2rem] bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-2xl p-1">
-                            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
+                        <div className="relative bg-[#080808] border border-white/10 rounded-3xl p-12 md:p-20 overflow-hidden group">
 
-                            <div className="relative bg-[#0a0a0a] rounded-[1.8rem] p-12 md:p-16">
-                                <Rocket className="w-16 h-16 text-white/80 mx-auto mb-8" />
-                                <h3 className="text-3xl md:text-5xl text-white font-bold leading-tight mb-6 tracking-tight">
-                                    Ready to make the shift?
+                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,50,50,0.1),transparent_70%)] opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
+
+                            <div className="relative z-10 flex flex-col items-center">
+                                <Rocket className="w-12 h-12 text-white mb-8" />
+                                <h3 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+                                    Stop studying. <br /> Start building.
                                 </h3>
-                                <p className="text-white/60 text-lg mb-10 max-w-lg mx-auto">
-                                    Join thousands of creators who've already transformed how they build.
-                                </p>
-                                <button className="group/btn relative inline-flex items-center gap-4 px-10 py-5 bg-white text-black text-lg font-bold uppercase tracking-wider rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(255,255,255,0.3)]">
-                                    <span className="relative z-10">Start Learning</span>
-                                    <ArrowRight className="relative z-10 w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300" />
+
+                                <button className="mt-8 group relative inline-flex items-center gap-3 px-8 py-4 bg-white text-black font-bold uppercase tracking-wider text-sm rounded-full overflow-hidden hover:scale-105 transition-transform duration-300">
+                                    <span className="relative z-10">Start Learning Free</span>
+                                    <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </div>
                         </div>
