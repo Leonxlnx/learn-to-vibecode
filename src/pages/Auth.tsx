@@ -152,7 +152,7 @@ const Auth = () => {
           </Link>
 
           {/* Logo */}
-          <img src="/images/VibeCode LOGO.png" alt="VibeCode Logo" className="w-16 mb-8 opacity-80" />
+          <img src="/images/vibecode-logo.png" alt="VibeCode Logo" className="w-16 mb-8 opacity-80" />
 
           <h1 className="text-6xl font-black text-white leading-[0.95] tracking-tighter mb-8">
             JOIN THE <br />
@@ -192,7 +192,7 @@ const Auth = () => {
             <Link to="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors">
               <ArrowLeft size={16} /> Back
             </Link>
-            <img src="/images/VibeCode LOGO.png" alt="VibeCode Logo" className="w-8" />
+            <img src="/images/vibecode-logo.png" alt="VibeCode Logo" className="w-8" />
           </div>
 
           {/* Form Header */}

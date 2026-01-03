@@ -69,11 +69,38 @@ const Onboarding = () => {
     };
 
     const handleComplete = async () => {
-        // Determine learning path based on experience
+        // Determine learning path based on vibecoding experience + programming skills
+        // 5 PATHS:
+        // 1. "speedrunner" - High vibecoding (3-4), wants to skip basics and just build
+        // 2. "builder" - Some vibecoding (1-2) + some coding, balanced approach
+        // 3. "developer" - High coding (4-5) but low vibecoding (0), skip programming basics
+        // 4. "beginner" - Low coding (0-2) + no vibecoding, full curriculum
+        // 5. "expert" - Already an expert (4), just show advanced tips
+
         const avgExp = (data.expGeneral + data.expWebdev + data.expAppdev + data.expGamedev) / 4;
+        const vibeLvl = data.vibecodeLevel;
+
         let path = 'beginner';
-        if (avgExp >= 3 && data.vibecodeLevel >= 2) path = 'intermediate';
-        if (avgExp >= 4 && data.vibecodeLevel >= 3) path = 'advanced';
+        let pathDescription = 'Full course with all fundamentals';
+
+        if (vibeLvl >= 4) {
+            // Already expert
+            path = 'expert';
+            pathDescription = 'Advanced techniques & optimization';
+        } else if (vibeLvl >= 3) {
+            // High vibecoding - just wants to build fast
+            path = 'speedrunner';
+            pathDescription = 'Skip basics, straight to building';
+        } else if (avgExp >= 4 && vibeLvl <= 1) {
+            // Experienced developer, new to vibecoding
+            path = 'developer';
+            pathDescription = 'Fast-track: tools + AI prompting';
+        } else if (vibeLvl >= 1 || avgExp >= 2) {
+            // Some experience in either
+            path = 'builder';
+            pathDescription = 'Balanced: key concepts + projects';
+        }
+        // else stays 'beginner'
 
         const finalData = { ...data, learningPath: path };
         setData(finalData);
@@ -82,7 +109,6 @@ const Onboarding = () => {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
-                // For now just navigate, would save to user_profiles table
                 console.log('Profile data:', finalData);
             }
         } catch (error) {
@@ -90,6 +116,15 @@ const Onboarding = () => {
         }
 
         setStep(totalSteps - 1); // Show profile summary
+    };
+
+    // Path data for display
+    const pathInfo: Record<string, { color: string; bgColor: string; label: string; desc: string }> = {
+        speedrunner: { color: 'text-orange-400', bgColor: 'bg-orange-500/20', label: 'Speedrunner', desc: 'Skip basics, straight to building' },
+        builder: { color: 'text-blue-400', bgColor: 'bg-blue-500/20', label: 'Builder', desc: 'Balanced: key concepts + projects' },
+        developer: { color: 'text-cyan-400', bgColor: 'bg-cyan-500/20', label: 'Developer Fast-Track', desc: 'Tools + AI prompting focused' },
+        beginner: { color: 'text-green-400', bgColor: 'bg-green-500/20', label: 'Complete Beginner', desc: 'Full course with all fundamentals' },
+        expert: { color: 'text-purple-400', bgColor: 'bg-purple-500/20', label: 'Expert', desc: 'Advanced techniques only' }
     };
 
     const slideVariants = {
@@ -399,10 +434,15 @@ const Onboarding = () => {
                                     )}
 
                                     <div className="pt-4 border-t border-white/5">
-                                        <p className="text-white/40 text-sm mb-1">Recommended Path</p>
-                                        <span className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${data.learningPath === 'advanced' ? 'bg-purple-500/20 text-purple-400' : data.learningPath === 'intermediate' ? 'bg-blue-500/20 text-blue-400' : 'bg-green-500/20 text-green-400'}`}>
-                                            {data.learningPath.charAt(0).toUpperCase() + data.learningPath.slice(1)}
-                                        </span>
+                                        <p className="text-white/40 text-sm mb-2">Recommended Path</p>
+                                        <div className={`inline-flex flex-col px-4 py-2 rounded-xl ${pathInfo[data.learningPath]?.bgColor || 'bg-green-500/20'}`}>
+                                            <span className={`text-sm font-bold ${pathInfo[data.learningPath]?.color || 'text-green-400'}`}>
+                                                {pathInfo[data.learningPath]?.label || 'Beginner'}
+                                            </span>
+                                            <span className="text-white/50 text-xs">
+                                                {pathInfo[data.learningPath]?.desc || 'Full course'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

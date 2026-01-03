@@ -14,7 +14,7 @@ const FooterSection = () => {
                 {/* Brand */}
                 <div className="flex flex-col gap-6">
                     <Link to="/" className="flex items-center gap-3 opacity-90 hover:opacity-100 transition-opacity">
-                        <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-10 h-10" />
+                        <img src="/images/vibecode-logo.png" alt="VibeCode" className="w-10 h-10" />
                         <span className="text-white font-bold text-xl tracking-tight">Learn2Vibecode</span>
                     </Link>
                     <p className="text-white/40 text-sm max-w-xs font-light">
