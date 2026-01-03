@@ -14,7 +14,6 @@ import RedAurora from '@/components/effects/RedAurora';
 
 /**
  * Main App component for Learn2Vibecode landing page
- * NOTE: Router is handled in main.tsx, this component is rendered at "/"
  */
 const App = () => {
   const navItems = [
@@ -24,23 +23,23 @@ const App = () => {
         {
           label: "Our Vision",
           description: "Redefining digital education.",
-          href: "/#vision",
+          href: "/vision",
           span: "col-span-2",
           icon: <Globe size={18} />,
           color: "from-red-500/10 to-white/5"
         },
         {
           label: "The Team",
-          description: "Creators & Engineers.",
-          href: "/#team",
+          description: "Leon & Ulrik.",
+          href: "/team",
           span: "col-span-1",
           icon: <Users size={18} />,
           color: "from-white/10 to-white/5"
         },
         {
-          label: "Manifesto",
-          description: "Why Vibecoding matters.",
-          href: "/#manifesto",
+          label: "Content",
+          description: "How we teach.",
+          href: "/content",
           span: "col-span-1",
           icon: <Cpu size={18} />,
           color: "from-white/10 to-white/5"
@@ -51,8 +50,8 @@ const App = () => {
       label: "Products",
       links: [
         {
-          label: "Vibecode Pro",
-          description: "The ultimate creative course.",
+          label: "Curriculum",
+          description: "The complete course.",
           href: "/curriculum",
           span: "col-span-2",
           icon: <Layers size={18} />,
@@ -60,7 +59,7 @@ const App = () => {
         },
         {
           label: "Pricing",
-          description: "Free forever.",
+          description: "Free & Pro plans.",
           href: "/pricing",
           span: "col-span-1",
           icon: <DollarSign size={18} />,
@@ -68,8 +67,8 @@ const App = () => {
         },
         {
           label: "Resources",
-          description: "Templates & guides.",
-          href: "/curriculum#resources",
+          description: "Tools & inspiration.",
+          href: "/resources",
           span: "col-span-1",
           icon: <BookOpen size={18} />,
           color: "from-white/10 to-white/5"
@@ -96,9 +95,9 @@ const App = () => {
           color: "from-white/10 to-white/5"
         },
         {
-          label: "Contact",
+          label: "Email",
           description: "Get in touch.",
-          href: "mailto:hello@learn2vibecode.com",
+          href: "mailto:leon.lin.privat@gmail.com",
           span: "col-span-1",
           icon: <Mail size={18} />,
           color: "from-white/10 to-white/5"

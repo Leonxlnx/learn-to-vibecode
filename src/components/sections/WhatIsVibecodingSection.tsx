@@ -8,16 +8,17 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TargetCard = ({ title, subtitle, desc, icon: Icon, index }: any) => (
     <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-        className="group relative p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] hover:border-white/10 transition-all duration-500 overflow-hidden"
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ delay: index * 0.1, duration: 0.5 }}
+        className="group relative p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] hover:border-white/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+        style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay', backgroundSize: '200px' }}
     >
-        <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
         <div className="relative z-10">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 text-white">
+            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 text-white">
                 <Icon size={24} strokeWidth={1.5} />
             </div>
 
@@ -95,8 +96,8 @@ const WhatIsVibecodingSection = () => {
     return (
         <section ref={sectionRef} className="relative w-full py-40 bg-[#0a0a0a] overflow-hidden">
 
-            {/* Background Ambience */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-red-900/15 blur-[150px] rounded-full pointer-events-none" />
+            {/* Background Ambience - positioned lower */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-red-900/15 blur-[150px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
 

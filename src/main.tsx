@@ -7,6 +7,12 @@ import Dashboard from "./pages/Dashboard.tsx";
 import Onboarding from "./pages/Onboarding.tsx";
 import Pricing from "./pages/Pricing.tsx";
 import CurriculumPage from "./pages/CurriculumPage.tsx";
+import Resources from "./pages/Resources.tsx";
+import Vision from "./pages/Vision.tsx";
+import Team from "./pages/Team.tsx";
+import Content from "./pages/Content.tsx";
+import Terms from "./pages/Terms.tsx";
+import Privacy from "./pages/Privacy.tsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -19,6 +25,12 @@ createRoot(document.getElementById("root")!).render(
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/curriculum" element={<CurriculumPage />} />
+      <Route path="/resources" element={<Resources />} />
+      <Route path="/vision" element={<Vision />} />
+      <Route path="/team" element={<Team />} />
+      <Route path="/content" element={<Content />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/privacy" element={<Privacy />} />
     </Routes>
     <Toaster
       position="top-center"
