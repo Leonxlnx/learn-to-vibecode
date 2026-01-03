@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import App from "./App.tsx";
 import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import Onboarding from "./pages/Onboarding.tsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -11,10 +12,11 @@ createRoot(document.getElementById("root")!).render(
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
-    <Toaster 
-      position="top-center" 
+    <Toaster
+      position="top-center"
       toastOptions={{
         style: {
           background: '#0a0a0a',

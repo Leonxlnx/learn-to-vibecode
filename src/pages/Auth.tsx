@@ -19,7 +19,7 @@ const signupSchema = z.object({
 // Map Supabase auth errors to generic user-friendly messages
 const getAuthErrorMessage = (error: any): string => {
   const errorCode = error?.code || error?.error_code || error?.message;
-  
+
   // Use generic messages to prevent user enumeration and info leakage
   const errorMap: Record<string, string> = {
     'invalid_credentials': 'Invalid email or password.',
@@ -31,13 +31,13 @@ const getAuthErrorMessage = (error: any): string => {
     'over_request_rate_limit': 'Too many attempts. Please try again later.',
     'signup_disabled': 'Sign up is currently disabled.',
   };
-  
+
   for (const [key, message] of Object.entries(errorMap)) {
     if (errorCode?.includes(key)) {
       return message;
     }
   }
-  
+
   return 'Authentication failed. Please try again.';
 };
 
@@ -56,7 +56,11 @@ const Auth = () => {
   // Check if user is already logged in
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) navigate('/dashboard');
+      // New signups go to onboarding, existing logins to dashboard
+      if (event === 'SIGNED_IN' && session?.user) {
+        // Check if this is a new user (would have onboarding incomplete)
+        // For now, we handle this in the login/signup handlers separately
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -101,7 +105,7 @@ const Auth = () => {
           setErrors(fieldErrors); setIsLoading(false); return;
         }
 
-        const redirectUrl = `${window.location.origin}/dashboard`;
+        const redirectUrl = `${window.location.origin}/onboarding`;
         const { error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
@@ -115,8 +119,8 @@ const Auth = () => {
         });
 
         if (error) throw error;
-        toast.success('Account created successfully!');
-        // Navigation handled by onAuthStateChange after auto-confirm
+        toast.success('Account created! Let\'s personalize your experience.');
+        navigate('/onboarding');
       }
     } catch (err: any) {
       toast.error(getAuthErrorMessage(err));
