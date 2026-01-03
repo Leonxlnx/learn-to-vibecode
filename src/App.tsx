@@ -1,4 +1,3 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box, Layers, Zap, Code, Cpu, Globe, MessageCircle, Twitter, Mail } from 'lucide-react';
 import CardNav from '@/components/ui/CardNav';
 import Hero from '@/components/sections/Hero';
@@ -11,26 +10,10 @@ import CommunitySection from '@/components/sections/CommunitySection';
 import CurriculumSection from '@/components/sections/CurriculumSection';
 import CTASection from '@/components/sections/CTASection';
 import FooterSection from '@/components/sections/FooterSection';
-import Auth from '@/pages/Auth';
-
-// Helper to layout main landing page components
-const LandingPage = () => (
-  <main>
-    <Hero />
-    <WhatIsVibecodingSection />
-    <TheShiftSection />
-    <ProphetSection />
-    <TheToolsSection />
-    <ProblemSection />
-    <CommunitySection />
-    <CurriculumSection />
-    <CTASection />
-    <FooterSection />
-  </main>
-);
 
 /**
  * Main App component for Learn2Vibecode landing page
+ * NOTE: Router is handled in main.tsx, this component is rendered at "/"
  */
 const App = () => {
   const navItems = [
@@ -94,23 +77,29 @@ const App = () => {
   ];
 
   return (
-    <Router>
-      <div className="relative w-full bg-black min-h-screen text-white overflow-x-hidden selection:bg-red-500/30">
-        <CardNav
-          logoAlt="Learn2Vibecode"
-          items={navItems}
-          baseColor="#ffffff"
-          menuColor="#000"
-          buttonBgColor="#111"
-          buttonTextColor="#fff"
-          ease="power3.out"
-        />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/auth" element={<Auth />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="relative w-full bg-black min-h-screen text-white overflow-x-hidden selection:bg-red-500/30">
+      <CardNav
+        logoAlt="Learn2Vibecode"
+        items={navItems}
+        baseColor="#ffffff"
+        menuColor="#000"
+        buttonBgColor="#111"
+        buttonTextColor="#fff"
+        ease="power3.out"
+      />
+      <main>
+        <Hero />
+        <WhatIsVibecodingSection />
+        <TheShiftSection />
+        <ProphetSection />
+        <TheToolsSection />
+        <ProblemSection />
+        <CommunitySection />
+        <CurriculumSection />
+        <CTASection />
+        <FooterSection />
+      </main>
+    </div>
   );
 };
 
