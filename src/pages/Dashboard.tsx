@@ -5,16 +5,37 @@ import { supabase } from '@/integrations/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import { LogOut, BookOpen, Zap, Trophy, ArrowRight, Settings, MessageCircle } from 'lucide-react';
 
+type Profile = {
+  name: string | null;
+  age_range: string | null;
+  exp_general: number;
+  exp_webdev: number;
+  exp_appdev: number;
+  exp_gamedev: number;
+  vibecode_level: number;
+  dream_project: string | null;
+  learning_path: string;
+  onboarding_completed: boolean;
+};
+
+const pathInfo: Record<string, { color: string; bgColor: string; label: string }> = {
+  speedrunner: { color: 'text-orange-400', bgColor: 'bg-orange-500/10', label: 'Speedrunner' },
+  builder: { color: 'text-blue-400', bgColor: 'bg-blue-500/10', label: 'Builder' },
+  developer: { color: 'text-cyan-400', bgColor: 'bg-cyan-500/10', label: 'Developer' },
+  beginner: { color: 'text-green-400', bgColor: 'bg-green-500/10', label: 'Beginner' },
+  expert: { color: 'text-purple-400', bgColor: 'bg-purple-500/10', label: 'Expert' }
+};
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
-        setLoading(false);
         if (!session?.user) {
           navigate('/auth');
         }
@@ -23,14 +44,48 @@ const Dashboard = () => {
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      setLoading(false);
       if (!session?.user) {
+        setLoading(false);
         navigate('/auth');
+      } else {
+        // Fetch profile after getting session
+        setTimeout(() => {
+          fetchProfile(session.user.id);
+        }, 0);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error fetching profile:', error);
+      setLoading(false);
+      return;
+    }
+
+    if (data) {
+      setProfile(data as Profile);
+      // Redirect to onboarding if not completed
+      if (!data.onboarding_completed) {
+        navigate('/onboarding');
+        return;
+      }
+    } else {
+      // No profile exists, redirect to onboarding
+      navigate('/onboarding');
+      return;
+    }
+
+    setLoading(false);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -47,7 +102,9 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  const userName = user.user_metadata?.name || user.email?.split('@')[0] || 'Builder';
+  const userName = profile?.name || user.user_metadata?.name || user.email?.split('@')[0] || 'Builder';
+  const learningPath = profile?.learning_path || 'beginner';
+  const pathData = pathInfo[learningPath] || pathInfo.beginner;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -117,12 +174,12 @@ const Dashboard = () => {
           </div>
           <div className="p-6 rounded-2xl bg-[#0d0d0d] border border-white/5">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                <BookOpen className="text-blue-500" size={24} />
+              <div className={`w-12 h-12 rounded-xl ${pathData.bgColor} flex items-center justify-center`}>
+                <BookOpen className={pathData.color} size={24} />
               </div>
               <div>
-                <p className="text-2xl font-black">Beginner</p>
-                <p className="text-white/40 text-sm">Current Level</p>
+                <p className={`text-2xl font-black ${pathData.color}`}>{pathData.label}</p>
+                <p className="text-white/40 text-sm">Learning Path</p>
               </div>
             </div>
           </div>
