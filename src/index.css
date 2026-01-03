@@ -9,25 +9,31 @@
 @layer base {
   :root {
     /* Dark Premium Palette */
-    --background: 0 0% 3%; /* #050505 */
-    --foreground: 0 0% 94%; /* #f0f0f0 */
+    --background: 0 0% 3%;
+    /* #050505 */
+    --foreground: 0 0% 94%;
+    /* #f0f0f0 */
 
-    --card: 0 0% 5%; /* #0a0a0a */
+    --card: 0 0% 5%;
+    /* #0a0a0a */
     --card-foreground: 0 0% 94%;
 
     --popover: 0 0% 5%;
     --popover-foreground: 0 0% 94%;
 
-    --primary: 0 0% 94%; /* White text */
+    --primary: 0 0% 94%;
+    /* White text */
     --primary-foreground: 0 0% 3%;
 
-    --secondary: 0 0% 7%; /* #111111 */
+    --secondary: 0 0% 7%;
+    /* #111111 */
     --secondary-foreground: 0 0% 94%;
 
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 14 100% 50%; /* #FF3300 accent */
+    --accent: 14 100% 50%;
+    /* #FF3300 accent */
     --accent-foreground: 0 0% 94%;
 
     --destructive: 0 84% 60%;
@@ -68,14 +74,22 @@
     @apply bg-background text-foreground antialiased overflow-x-hidden;
     font-family: 'Inter Tight', 'Space Grotesk', sans-serif;
     background-color: #050505;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none;
+    /* Firefox */
   }
 
   body::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Edge */
+    display: none;
+    /* Chrome, Safari, Edge */
   }
 
-  h1, h2, h3, h4, h5, h6, .font-display {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
     font-family: 'Inter Tight', sans-serif;
     font-weight: 900;
   }
@@ -95,20 +109,21 @@
 }
 
 @layer utilities {
+
   /* Organic Luxury Utilities */
   .text-balance {
     text-wrap: balance;
   }
 
   .organic-shadow {
-    box-shadow: 
+    box-shadow:
       0 2px 4px hsl(var(--charcoal) / 0.02),
       0 8px 16px hsl(var(--charcoal) / 0.04),
       0 24px 48px hsl(var(--charcoal) / 0.06);
   }
 
   .organic-shadow-lg {
-    box-shadow: 
+    box-shadow:
       0 4px 8px hsl(var(--charcoal) / 0.03),
       0 16px 32px hsl(var(--charcoal) / 0.06),
       0 48px 96px hsl(var(--charcoal) / 0.09);
@@ -147,6 +162,7 @@
     0% {
       transform: scale(1) translate(0, 0);
     }
+
     100% {
       transform: scale(1.1) translate(-2%, -1%);
     }
@@ -175,13 +191,52 @@
   }
 
   @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
   }
 
   @keyframes marquee-reverse {
-    0% { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  /* Slow marquee for Vibe Stack */
+  .animate-marquee-slow {
+    animation: marquee-slow 40s linear infinite;
+  }
+
+  .animate-marquee-slow-reverse {
+    animation: marquee-slow-reverse 40s linear infinite;
+  }
+
+  @keyframes marquee-slow {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes marquee-slow-reverse {
+    0% {
+      transform: translateX(-50%);
+    }
+
+    100% {
+      transform: translateX(0);
+    }
   }
 
   /* 3D Tilt Card */

@@ -1,8 +1,10 @@
 import { Box, Layers, Zap, Code, Cpu, Globe, MessageCircle, Twitter, Mail } from 'lucide-react';
 import CardNav from '@/components/ui/CardNav';
 import Hero from '@/components/sections/Hero';
-import ProblemSection from '@/components/sections/ProblemSection';
-import ContentSection from '@/components/sections/ContentSection';
+import TheShiftSection from '@/components/sections/TheShiftSection';
+import ProphetSection from '@/components/sections/ProphetSection';
+import TargetAudienceSection from '@/components/sections/TargetAudienceSection';
+import VibeStackSection from '@/components/sections/VibeStackSection';
 
 /**
  * Main App component for Learn2Vibecode landing page
@@ -101,10 +103,13 @@ const App = () => {
         ease="power3.out"
       />
       <Hero />
-      <ProblemSection />
-      <ContentSection />
+      <TheShiftSection />
+      <ProphetSection />
+      <TargetAudienceSection />
+      <VibeStackSection />
     </main>
   );
 };
 
 export default App;
+
