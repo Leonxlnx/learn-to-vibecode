@@ -382,10 +382,10 @@ const Onboarding = () => {
                         </motion.div>
                     )}
 
-                    {/* Step 5: Profile Summary */}
+                    {/* Step 5: Complete */}
                     {step === 5 && (
                         <motion.div
-                            key="profile"
+                            key="complete"
                             variants={slideVariants}
                             initial="enter"
                             animate="center"
@@ -395,81 +395,27 @@ const Onboarding = () => {
                             <motion.div
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
-                                transition={{ delay: 0.2, type: "spring" }}
-                                className="w-20 h-20 mx-auto mb-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center"
+                                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                                className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-8"
                             >
-                                <Check size={32} className="text-green-500" />
+                                <Check size={36} className="text-green-500" />
                             </motion.div>
 
-                            <h2 className="text-3xl md:text-4xl font-black mb-8">Your Profile</h2>
+                            <h2 className="text-3xl md:text-4xl font-black mb-4">You're ready!</h2>
+                            <p className="text-white/40 mb-8">Your personalized course is waiting for you.</p>
 
-                            <div className="bg-white/5 border border-white/10 rounded-3xl p-8 text-left mb-8">
-                                <div className="space-y-4">
-                                    <div className="flex justify-between border-b border-white/5 pb-3">
-                                        <span className="text-white/40">Name</span>
-                                        <span className="font-medium">{data.name}</span>
-                                    </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3">
-                                        <span className="text-white/40">Email</span>
-                                        <span className="font-medium">{data.email}</span>
-                                    </div>
-                                    <div className="flex justify-between border-b border-white/5 pb-3">
-                                        <span className="text-white/40">Age</span>
-                                        <span className="font-medium">{data.ageRange}</span>
-                                    </div>
-
-                                    <div className="pt-4">
-                                        <p className="text-white/40 text-sm mb-3">Experience</p>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            {[
-                                                { label: 'General', value: data.expGeneral },
-                                                { label: 'Web', value: data.expWebdev },
-                                                { label: 'App', value: data.expAppdev },
-                                                { label: 'Game', value: data.expGamedev },
-                                            ].map(({ label, value }) => (
-                                                <div key={label} className="flex items-center gap-2">
-                                                    <span className="text-white/40 text-sm">{label}:</span>
-                                                    <div className="flex gap-0.5">
-                                                        {[1, 2, 3, 4, 5].map((i) => (
-                                                            <div key={i} className={`w-2 h-2 rounded-sm ${i <= value ? 'bg-red-500' : 'bg-white/10'}`} />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 border-t border-white/5">
-                                        <p className="text-white/40 text-sm mb-1">AI Experience</p>
-                                        <p className="font-medium text-sm">{vibecodeLevels[data.vibecodeLevel]}</p>
-                                    </div>
-
-                                    {data.dreamProject && (
-                                        <div className="pt-4 border-t border-white/5">
-                                            <p className="text-white/40 text-sm mb-1">Dream Project</p>
-                                            <p className="font-medium text-sm">{data.dreamProject}</p>
-                                        </div>
-                                    )}
-
-                                    <div className="pt-4 border-t border-white/5">
-                                        <p className="text-white/40 text-sm mb-2">Recommended Path</p>
-                                        <div className={`inline-flex flex-col px-4 py-2 rounded-xl ${pathInfo[data.learningPath]?.bgColor || 'bg-green-500/20'}`}>
-                                            <span className={`text-sm font-bold ${pathInfo[data.learningPath]?.color || 'text-green-400'}`}>
-                                                {pathInfo[data.learningPath]?.label || 'Beginner'}
-                                            </span>
-                                            <span className="text-white/50 text-xs">
-                                                {pathInfo[data.learningPath]?.desc || 'Full course'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-2xl mb-10 ${pathInfo[data.learningPath]?.bgColor || 'bg-green-500/20'}`}>
+                                <Sparkles size={18} className={pathInfo[data.learningPath]?.color || 'text-green-400'} />
+                                <span className={`font-bold ${pathInfo[data.learningPath]?.color || 'text-green-400'}`}>
+                                    {pathInfo[data.learningPath]?.label || 'Beginner'} Path
+                                </span>
                             </div>
 
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => navigate('/dashboard')}
-                                className="px-10 py-4 bg-white text-black font-bold rounded-full uppercase tracking-wider flex items-center gap-3 mx-auto"
+                                className="px-10 py-4 bg-white text-black font-bold rounded-2xl uppercase tracking-wider flex items-center gap-3 mx-auto"
                             >
                                 Start Learning <ArrowRight size={18} />
                             </motion.button>

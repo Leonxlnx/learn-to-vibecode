@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, BookOpen, FolderOpen, Bookmark, Settings, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, BookOpen, FolderOpen, Bookmark, Settings, LogOut, Menu, X } from 'lucide-react';
 
 interface SidebarProps {
     onLogout: () => void;
     userName: string;
+    codePoints?: number;
 }
 
 const navItems = [
@@ -16,28 +17,27 @@ const navItems = [
     { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
 ];
 
-const Sidebar = ({ onLogout, userName }: SidebarProps) => {
+const Sidebar = ({ onLogout, userName, codePoints = 0 }: SidebarProps) => {
     const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     return (
         <motion.aside
-            animate={{ width: isCollapsed ? 72 : 240 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            animate={{ width: isCollapsed ? 72 : 260 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="fixed left-0 top-0 h-screen bg-[#0a0a0a] border-r border-white/5 flex flex-col z-40"
         >
-            {/* Logo */}
-            <div className="p-4 border-b border-white/5">
+            {/* Header with Logo and Toggle */}
+            <div className="p-4 flex items-center justify-between">
                 <Link to="/" className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
-                        <img src="/images/vibecode-logo.png" alt="V" className="w-5 h-5" />
-                    </div>
+                    <img src="/images/vibecode-logo.png" alt="V" className="w-8 h-8 rounded-lg" />
                     <AnimatePresence>
                         {!isCollapsed && (
                             <motion.span
                                 initial={{ opacity: 0, x: -10 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -10 }}
+                                transition={{ duration: 0.15 }}
                                 className="font-bold text-white text-lg whitespace-nowrap"
                             >
                                 Vibecode
@@ -45,18 +45,18 @@ const Sidebar = ({ onLogout, userName }: SidebarProps) => {
                         )}
                     </AnimatePresence>
                 </Link>
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+                >
+                    {isCollapsed ? <Menu size={16} /> : <X size={16} />}
+                </motion.button>
             </div>
 
-            {/* Toggle Button */}
-            <button
-                onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute -right-3 top-20 w-6 h-6 bg-[#0a0a0a] border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:border-white/20 transition-all z-50"
-            >
-                {isCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
-            </button>
-
             {/* Navigation */}
-            <nav className="flex-1 p-3">
+            <nav className="flex-1 p-3 mt-2">
                 <ul className="space-y-1">
                     {navItems.map((item) => {
                         const isExactDashboard = item.path === '/dashboard' && location.pathname === '/dashboard';
@@ -67,7 +67,7 @@ const Sidebar = ({ onLogout, userName }: SidebarProps) => {
                             <li key={item.path}>
                                 <Link
                                     to={item.path}
-                                    className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-200 ${active
+                                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-200 ${active
                                             ? 'bg-white/10 text-white'
                                             : 'text-white/40 hover:text-white hover:bg-white/5'
                                         }`}
@@ -80,6 +80,7 @@ const Sidebar = ({ onLogout, userName }: SidebarProps) => {
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
+                                                transition={{ duration: 0.15 }}
                                                 className="text-sm font-medium whitespace-nowrap"
                                             >
                                                 {item.label}
@@ -95,26 +96,27 @@ const Sidebar = ({ onLogout, userName }: SidebarProps) => {
 
             {/* User Section */}
             <div className="p-3 border-t border-white/5">
-                <div className={`flex items-center gap-3 px-3 py-3 mb-1 ${isCollapsed ? 'justify-center' : ''}`}>
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/20 flex items-center justify-center text-red-500 text-sm font-bold flex-shrink-0">
+                <div className={`flex items-center gap-3 px-4 py-3 mb-1 ${isCollapsed ? 'justify-center' : ''}`}>
+                    <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                         {userName.charAt(0).toUpperCase()}
                     </div>
                     <AnimatePresence>
                         {!isCollapsed && (
-                            <motion.span
+                            <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="text-sm text-white/60 truncate"
+                                className="flex-1 min-w-0"
                             >
-                                {userName}
-                            </motion.span>
+                                <p className="text-sm text-white truncate">{userName}</p>
+                                <p className="text-xs text-white/30">{codePoints} CP</p>
+                            </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
                 <button
                     onClick={onLogout}
-                    className={`flex items-center gap-3 w-full px-3 py-3 rounded-xl text-white/30 hover:text-white hover:bg-white/5 transition-all duration-200 ${isCollapsed ? 'justify-center' : ''}`}
+                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-white/30 hover:text-white hover:bg-white/5 transition-all duration-200 ${isCollapsed ? 'justify-center' : ''}`}
                     title={isCollapsed ? 'Logout' : undefined}
                 >
                     <LogOut size={20} className="flex-shrink-0" />
