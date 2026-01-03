@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          age_range: string | null
+          created_at: string | null
+          dream_project: string | null
+          exp_appdev: number | null
+          exp_gamedev: number | null
+          exp_general: number | null
+          exp_webdev: number | null
+          id: string
+          learning_path: string | null
+          name: string | null
+          onboarding_completed: boolean | null
+          updated_at: string | null
+          vibecode_level: number | null
+        }
+        Insert: {
+          age_range?: string | null
+          created_at?: string | null
+          dream_project?: string | null
+          exp_appdev?: number | null
+          exp_gamedev?: number | null
+          exp_general?: number | null
+          exp_webdev?: number | null
+          id: string
+          learning_path?: string | null
+          name?: string | null
+          onboarding_completed?: boolean | null
+          updated_at?: string | null
+          vibecode_level?: number | null
+        }
+        Update: {
+          age_range?: string | null
+          created_at?: string | null
+          dream_project?: string | null
+          exp_appdev?: number | null
+          exp_gamedev?: number | null
+          exp_general?: number | null
+          exp_webdev?: number | null
+          id?: string
+          learning_path?: string | null
+          name?: string | null
+          onboarding_completed?: boolean | null
+          updated_at?: string | null
+          vibecode_level?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

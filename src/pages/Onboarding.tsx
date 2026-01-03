@@ -81,35 +81,43 @@ const Onboarding = () => {
         const vibeLvl = data.vibecodeLevel;
 
         let path = 'beginner';
-        let pathDescription = 'Full course with all fundamentals';
 
         if (vibeLvl >= 4) {
-            // Already expert
             path = 'expert';
-            pathDescription = 'Advanced techniques & optimization';
         } else if (vibeLvl >= 3) {
-            // High vibecoding - just wants to build fast
             path = 'speedrunner';
-            pathDescription = 'Skip basics, straight to building';
         } else if (avgExp >= 4 && vibeLvl <= 1) {
-            // Experienced developer, new to vibecoding
             path = 'developer';
-            pathDescription = 'Fast-track: tools + AI prompting';
         } else if (vibeLvl >= 1 || avgExp >= 2) {
-            // Some experience in either
             path = 'builder';
-            pathDescription = 'Balanced: key concepts + projects';
         }
-        // else stays 'beginner'
 
         const finalData = { ...data, learningPath: path };
         setData(finalData);
 
-        // Save to Supabase (if table exists)
+        // Save profile to database
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
-                console.log('Profile data:', finalData);
+                const { error } = await supabase
+                    .from('profiles')
+                    .upsert({
+                        id: user.id,
+                        name: finalData.name,
+                        age_range: finalData.ageRange,
+                        exp_general: finalData.expGeneral,
+                        exp_webdev: finalData.expWebdev,
+                        exp_appdev: finalData.expAppdev,
+                        exp_gamedev: finalData.expGamedev,
+                        vibecode_level: finalData.vibecodeLevel,
+                        dream_project: finalData.dreamProject,
+                        learning_path: path,
+                        onboarding_completed: true
+                    });
+                
+                if (error) {
+                    console.error('Error saving profile:', error);
+                }
             }
         } catch (error) {
             console.error('Error saving profile:', error);
