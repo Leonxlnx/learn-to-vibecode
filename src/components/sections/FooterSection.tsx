@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+import { MessageCircle, Twitter, Github } from 'lucide-react';
 
 /**
- * Footer Section - Single, clean, rounded corners
+ * Footer Section - Single, clean, rounded corners with real links
  */
 const FooterSection = () => {
     return (
@@ -27,15 +28,36 @@ const FooterSection = () => {
                 <div className="flex gap-16 text-sm">
                     <div className="flex flex-col gap-4">
                         <span className="text-white font-bold mb-2">Platform</span>
-                        <a href="#" className="text-white/50 hover:text-white transition-colors">Curriculum</a>
-                        <a href="#" className="text-white/50 hover:text-white transition-colors">Pricing</a>
+                        <Link to="/curriculum" className="text-white/50 hover:text-white transition-colors">Curriculum</Link>
+                        <Link to="/pricing" className="text-white/50 hover:text-white transition-colors">Pricing</Link>
                         <Link to="/auth" className="text-white/50 hover:text-white transition-colors">Login</Link>
                     </div>
                     <div className="flex flex-col gap-4">
                         <span className="text-white font-bold mb-2">Connect</span>
-                        <a href="#" className="text-white/50 hover:text-white transition-colors">Twitter</a>
-                        <a href="#" className="text-white/50 hover:text-white transition-colors">Discord</a>
-                        <a href="#" className="text-white/50 hover:text-white transition-colors">GitHub</a>
+                        <a
+                            href="https://discord.gg/bQW2YtNB6G"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/50 hover:text-white transition-colors flex items-center gap-2"
+                        >
+                            <MessageCircle size={14} /> Discord
+                        </a>
+                        <a
+                            href="https://x.com/LexnL89916"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/50 hover:text-white transition-colors flex items-center gap-2"
+                        >
+                            <Twitter size={14} /> Twitter
+                        </a>
+                        <a
+                            href="https://github.com/learn2vibecode"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-white/50 hover:text-white transition-colors flex items-center gap-2"
+                        >
+                            <Github size={14} /> GitHub
+                        </a>
                     </div>
                 </div>
 

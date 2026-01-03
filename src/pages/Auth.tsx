@@ -137,20 +137,21 @@ const Auth = () => {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-black items-center justify-center p-12"
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-black flex-col p-12"
       >
-        {/* Animated Background - No Weird Gradients, just subtle red ambient */}
+        {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-red-900/10 blur-[150px] rounded-full animate-pulse" />
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05]" />
         </div>
 
-        <div className="relative z-10 max-w-lg">
-          <Link to="/" className="inline-flex items-center gap-2 mb-12 text-white/50 hover:text-white transition-colors group px-4 py-2 rounded-full hover:bg-white/5">
-            <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="font-mono text-xs uppercase tracking-widest">Back</span>
-          </Link>
+        {/* Back button - Top Left */}
+        <Link to="/" className="absolute top-8 left-8 inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors group px-4 py-2 rounded-full hover:bg-white/5 z-20">
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="font-mono text-xs uppercase tracking-widest">Back</span>
+        </Link>
 
+        <div className="relative z-10 max-w-lg mt-24">
           {/* Logo */}
           <img src="/images/vibecode-logo.png" alt="VibeCode Logo" className="w-16 mb-8 opacity-80" />
 

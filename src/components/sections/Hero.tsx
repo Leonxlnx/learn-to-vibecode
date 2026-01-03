@@ -46,7 +46,12 @@ const Hero = () => {
     return (
         <>
             <section className="relative h-screen w-full flex flex-col items-center justify-center bg-[#050505] overflow-hidden">
-                <div className="absolute inset-0 z-0">
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 2, delay: 0.5, ease: "easeOut" }}
+                    className="absolute inset-0 z-0"
+                >
                     <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }}>
                         <Suspense fallback={null}>
                             <Bubble />
@@ -55,7 +60,7 @@ const Hero = () => {
                             <ambientLight intensity={0.5} />
                         </Suspense>
                     </Canvas>
-                </div>
+                </motion.div>
 
                 <motion.div
                     variants={containerVars}

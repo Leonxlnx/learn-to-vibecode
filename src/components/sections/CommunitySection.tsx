@@ -25,14 +25,17 @@ const statements = [
 
 const CommunitySection = () => {
     return (
-        <section className="w-full py-40 px-6 bg-[#030303] relative overflow-hidden">
+        <section className="w-full py-40 px-6 bg-[#0a0a0a] relative overflow-hidden">
+            {/* Aurora glow */}
+            <div className="absolute top-1/2 left-1/4 w-[500px] h-[500px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto relative z-10">
 
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6 }}
                     className="mb-20 text-center"
                 >
                     <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter">
@@ -40,16 +43,17 @@ const CommunitySection = () => {
                     </h2>
                 </motion.div>
 
-                {/* Bento Grid - Fixed visibility */}
+                {/* Bento Grid - Fixed animation */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                    {/* Featured Large Card - spans 2 cols on lg */}
+                    {/* Featured Large Card */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        whileHover={{ y: -5 }}
-                        className="lg:col-span-2 bg-gradient-to-br from-[#0f0f0f] to-[#080808] p-10 rounded-3xl border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between min-h-[280px]"
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.5 }}
+                        className="lg:col-span-2 bg-gradient-to-br from-[#0f0f0f] to-[#080808] p-10 rounded-3xl border border-white/5 hover:border-white/10 hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[280px]"
+                        style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay' }}
                     >
                         <p className="text-2xl md:text-3xl font-medium text-white/90 leading-relaxed">
                             "{statements[0].text}"
@@ -62,16 +66,16 @@ const CommunitySection = () => {
                         </div>
                     </motion.div>
 
-                    {/* Regular Cards */}
+                    {/* Regular Cards - using CSS transition instead of motion hover */}
                     {statements.slice(1).map((s, i) => (
                         <motion.div
                             key={i}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: (i + 1) * 0.1 }}
-                            whileHover={{ y: -3 }}
-                            className="bg-[#080808] p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between min-h-[200px]"
+                            viewport={{ once: true, amount: 0.3 }}
+                            transition={{ duration: 0.5, delay: (i + 1) * 0.1 }}
+                            className="bg-[#080808] p-8 rounded-2xl border border-white/5 hover:border-white/10 hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
+                            style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay', backgroundSize: '200px' }}
                         >
                             <p className="text-lg font-medium text-white/70 leading-relaxed">
                                 "{s.text}"

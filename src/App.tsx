@@ -1,4 +1,4 @@
-import { Box, Layers, Zap, Code, Cpu, Globe, MessageCircle, Twitter, Mail } from 'lucide-react';
+import { Box, Layers, Zap, Code, Cpu, Globe, MessageCircle, Twitter, Mail, DollarSign, BookOpen, Users } from 'lucide-react';
 import CardNav from '@/components/ui/CardNav';
 import Hero from '@/components/sections/Hero';
 import WhatIsVibecodingSection from '@/components/sections/WhatIsVibecodingSection';
@@ -10,6 +10,7 @@ import CommunitySection from '@/components/sections/CommunitySection';
 import CurriculumSection from '@/components/sections/CurriculumSection';
 import CTASection from '@/components/sections/CTASection';
 import FooterSection from '@/components/sections/FooterSection';
+import RedAurora from '@/components/effects/RedAurora';
 
 /**
  * Main App component for Learn2Vibecode landing page
@@ -23,13 +24,23 @@ const App = () => {
         {
           label: "Our Vision",
           description: "Redefining digital education.",
+          href: "/#vision",
           span: "col-span-2",
           icon: <Globe size={18} />,
-          color: "from-white/10 to-white/5"
+          color: "from-red-500/10 to-white/5"
         },
         {
           label: "The Team",
           description: "Creators & Engineers.",
+          href: "/#team",
+          span: "col-span-1",
+          icon: <Users size={18} />,
+          color: "from-white/10 to-white/5"
+        },
+        {
+          label: "Manifesto",
+          description: "Why Vibecoding matters.",
+          href: "/#manifesto",
           span: "col-span-1",
           icon: <Cpu size={18} />,
           color: "from-white/10 to-white/5"
@@ -42,15 +53,25 @@ const App = () => {
         {
           label: "Vibecode Pro",
           description: "The ultimate creative course.",
+          href: "/curriculum",
           span: "col-span-2",
           icon: <Layers size={18} />,
+          color: "from-red-500/10 to-white/5"
+        },
+        {
+          label: "Pricing",
+          description: "Free forever.",
+          href: "/pricing",
+          span: "col-span-1",
+          icon: <DollarSign size={18} />,
           color: "from-white/10 to-white/5"
         },
         {
-          label: "Templates",
-          description: "Start faster.",
+          label: "Resources",
+          description: "Templates & guides.",
+          href: "/curriculum#resources",
           span: "col-span-1",
-          icon: <Code size={18} />,
+          icon: <BookOpen size={18} />,
           color: "from-white/10 to-white/5"
         }
       ]
@@ -59,17 +80,27 @@ const App = () => {
       label: "Connect",
       links: [
         {
-          label: "Community",
-          description: "Join the movement.",
+          label: "Discord",
+          description: "Join 20,000+ builders.",
+          href: "https://discord.gg/bQW2YtNB6G",
           span: "col-span-2",
           icon: <MessageCircle size={18} />,
-          color: "from-white/10 to-white/5"
+          color: "from-red-500/10 to-white/5"
         },
         {
           label: "Twitter",
-          description: "Updates.",
+          description: "Latest updates.",
+          href: "https://x.com/LexnL89916",
           span: "col-span-1",
           icon: <Twitter size={18} />,
+          color: "from-white/10 to-white/5"
+        },
+        {
+          label: "Contact",
+          description: "Get in touch.",
+          href: "mailto:hello@learn2vibecode.com",
+          span: "col-span-1",
+          icon: <Mail size={18} />,
           color: "from-white/10 to-white/5"
         }
       ]
@@ -77,7 +108,12 @@ const App = () => {
   ];
 
   return (
-    <div className="relative w-full bg-black min-h-screen text-white overflow-x-hidden selection:bg-red-500/30">
+    <div className="relative w-full bg-[#0a0a0a] min-h-screen text-white overflow-x-hidden selection:bg-red-500/30">
+      {/* Global Aurora Background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <RedAurora />
+      </div>
+
       <CardNav
         logoAlt="Learn2Vibecode"
         items={navItems}
@@ -87,7 +123,7 @@ const App = () => {
         buttonTextColor="#fff"
         ease="power3.out"
       />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <WhatIsVibecodingSection />
         <TheShiftSection />

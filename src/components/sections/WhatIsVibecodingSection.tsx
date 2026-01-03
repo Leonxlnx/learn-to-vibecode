@@ -93,10 +93,10 @@ const WhatIsVibecodingSection = () => {
     };
 
     return (
-        <section ref={sectionRef} className="relative w-full py-40 bg-[#030303] overflow-hidden">
+        <section ref={sectionRef} className="relative w-full py-40 bg-[#0a0a0a] overflow-hidden">
 
             {/* Background Ambience */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-red-900/15 blur-[150px] rounded-full pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
 

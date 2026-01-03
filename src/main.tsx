@@ -5,6 +5,8 @@ import App from "./App.tsx";
 import Auth from "./pages/Auth.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Onboarding from "./pages/Onboarding.tsx";
+import Pricing from "./pages/Pricing.tsx";
+import CurriculumPage from "./pages/CurriculumPage.tsx";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -12,8 +14,11 @@ createRoot(document.getElementById("root")!).render(
     <Routes>
       <Route path="/" element={<App />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/login" element={<Auth />} />
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/curriculum" element={<CurriculumPage />} />
     </Routes>
     <Toaster
       position="top-center"

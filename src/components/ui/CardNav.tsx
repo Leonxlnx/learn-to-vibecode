@@ -116,7 +116,7 @@ const CardNav = ({
                                             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95, filter: "blur(8px)", transition: { duration: 0.15 } }}
                                             transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                                            className="relative p-2 rounded-3xl border border-white/10 bg-[#0a0a0a]/95 backdrop-blur-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.8)] overflow-hidden"
+                                            className="relative p-2 rounded-3xl border border-white/15 bg-[#0d0d0d] backdrop-blur-xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.9)] overflow-hidden"
                                         >
                                             {/* Glossy Overlay */}
                                             <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />

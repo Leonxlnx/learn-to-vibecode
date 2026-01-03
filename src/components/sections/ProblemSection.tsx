@@ -4,8 +4,7 @@ import { ArrowRight, TrendingUp, Clock, Zap, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 /**
- * Problem/Why Now Section
- * Features: Dark card, Studies/Research bento cards, simpler wording
+ * Problem/Why Now Section - Fixed double-fade animation
  */
 const ProblemSection = () => {
     const containerRef = useRef(null);
@@ -44,20 +43,23 @@ const ProblemSection = () => {
     ];
 
     return (
-        <section ref={containerRef} className="relative w-full py-48 bg-[#030303] z-10 overflow-hidden">
+        <section ref={containerRef} className="relative w-full py-48 bg-[#0a0a0a] z-10 overflow-hidden">
 
-            {/* Background */}
+            {/* Background Aurora */}
             <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-red-900/5 blur-[100px] rounded-full" />
-                <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-red-900/5 blur-[100px] rounded-full" />
+                <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-red-900/10 blur-[120px] rounded-full" />
+                <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-red-900/8 blur-[120px] rounded-full" />
             </div>
 
             <div className="max-w-7xl mx-auto px-6 relative z-10">
 
-                <motion.div style={{ y }} className="relative rounded-[2.5rem] bg-[#0a0a0a] border border-white/10 overflow-hidden shadow-2xl p-10 md:p-20">
+                <motion.div style={{ y }} className="relative rounded-[2.5rem] bg-[#0d0d0d] border border-white/10 overflow-hidden shadow-2xl p-10 md:p-20">
+
+                    {/* Noise texture */}
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none" />
 
                     {/* Inner Glow */}
-                    <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[70%] h-[40%] bg-red-600/10 blur-[80px] rounded-full pointer-events-none" />
+                    <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[70%] h-[40%] bg-red-600/15 blur-[80px] rounded-full pointer-events-none" />
 
                     {/* Header */}
                     <div className="text-center mb-20 relative z-10">
@@ -73,17 +75,17 @@ const ProblemSection = () => {
                         </p>
                     </div>
 
-                    {/* Studies Bento Grid */}
+                    {/* Studies Bento Grid - Fixed: removed whileInView double animation */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                         {studies.map((study, i) => (
                             <motion.div
                                 key={i}
-                                initial={{ opacity: 0, y: 30 }}
+                                initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                                whileHover={{ y: -5, borderColor: "rgba(255,255,255,0.15)" }}
-                                className="p-8 rounded-2xl border border-white/5 bg-black/30 hover:bg-black/50 transition-all cursor-default"
+                                viewport={{ once: true, amount: 0.5 }}
+                                transition={{ duration: 0.4, delay: i * 0.1 }}
+                                className="p-8 rounded-2xl border border-white/5 bg-black/40 hover:bg-black/60 hover:border-white/10 hover:-translate-y-1 transition-all cursor-default"
+                                style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay', backgroundSize: '200px' }}
                             >
                                 <div className="flex items-start gap-6">
                                     <div className="w-14 h-14 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 flex-shrink-0">
