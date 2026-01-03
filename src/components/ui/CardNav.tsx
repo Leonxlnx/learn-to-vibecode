@@ -80,7 +80,7 @@ const CardNav = ({
                         <img src={logo} alt={logoAlt} className="h-6 w-auto" />
                     ) : (
                         <div className="flex items-center gap-2">
-                            <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-6 h-6" />
+                            <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-8 h-8" />
                             <span className="font-bold tracking-tight text-white text-sm uppercase">Learn2Vibecode</span>
                         </div>
                     )}
@@ -210,7 +210,7 @@ const CardNav = ({
             {/* --- MOBILE NAV --- */}
             <div className="md:hidden fixed top-4 left-4 right-4 z-50 flex justify-between items-center p-3 px-5 rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-xl shadow-lg">
                 <Link to="/" className="flex items-center gap-2">
-                    <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-6 h-6" />
+                    <img src="/images/VibeCode LOGO.png" alt="VibeCode" className="w-7 h-7" />
                     <span className="font-bold text-white text-sm tracking-tight uppercase">Learn2Vibecode</span>
                 </Link>
                 <button

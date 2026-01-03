@@ -29,24 +29,29 @@ const CommunitySection = () => {
 
             <div className="max-w-7xl mx-auto relative z-10">
 
-                <div className="mb-20 text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mb-20 text-center"
+                >
                     <h2 className="text-5xl md:text-8xl font-black text-white tracking-tighter">
                         COMMUNITY
                     </h2>
-                </div>
+                </motion.div>
 
-                {/* Bento Grid - More interesting layout */}
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-4 auto-rows-[180px]">
+                {/* Bento Grid - Fixed visibility */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                    {/* Featured Large Card */}
+                    {/* Featured Large Card - spans 2 cols on lg */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         whileHover={{ y: -5 }}
-                        className="md:col-span-4 md:row-span-2 bg-gradient-to-br from-[#0f0f0f] to-[#080808] p-10 rounded-3xl border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between"
+                        className="lg:col-span-2 bg-gradient-to-br from-[#0f0f0f] to-[#080808] p-10 rounded-3xl border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between min-h-[280px]"
                     >
-                        <p className="text-3xl md:text-4xl font-medium text-white/90 leading-relaxed">
+                        <p className="text-2xl md:text-3xl font-medium text-white/90 leading-relaxed">
                             "{statements[0].text}"
                         </p>
                         <div className="flex items-center gap-4 mt-8">
@@ -57,7 +62,7 @@ const CommunitySection = () => {
                         </div>
                     </motion.div>
 
-                    {/* Smaller Cards */}
+                    {/* Regular Cards */}
                     {statements.slice(1).map((s, i) => (
                         <motion.div
                             key={i}
@@ -66,9 +71,9 @@ const CommunitySection = () => {
                             viewport={{ once: true }}
                             transition={{ delay: (i + 1) * 0.1 }}
                             whileHover={{ y: -3 }}
-                            className={`${i === 0 || i === 1 ? 'md:col-span-2' : 'md:col-span-3'} bg-[#080808] p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between`}
+                            className="bg-[#080808] p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-all flex flex-col justify-between min-h-[200px]"
                         >
-                            <p className="text-lg font-medium text-white/70 leading-relaxed line-clamp-4">
+                            <p className="text-lg font-medium text-white/70 leading-relaxed">
                                 "{s.text}"
                             </p>
                             <div className="flex items-center gap-3 mt-6">
