@@ -43,18 +43,11 @@ const CommunitySection = () => {
                     </h2>
                 </motion.div>
 
-                {/* Bento Grid - Fixed animation */}
+                {/* Bento Grid - Static cards with hover only */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                     {/* Featured Large Card */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.3 }}
-                        transition={{ duration: 0.5 }}
-                        className="lg:col-span-2 bg-gradient-to-br from-[#0f0f0f] to-[#080808] p-10 rounded-3xl border border-white/5 hover:border-white/10 hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[280px]"
-                        style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay' }}
-                    >
+                    <div className="lg:col-span-2 bg-[#0d0d0d] p-10 rounded-3xl border border-white/5 hover:border-white/10 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[280px]">
                         <p className="text-2xl md:text-3xl font-medium text-white/90 leading-relaxed">
                             "{statements[0].text}"
                         </p>
@@ -64,18 +57,13 @@ const CommunitySection = () => {
                                 {statements[0].author}
                             </span>
                         </div>
-                    </motion.div>
+                    </div>
 
-                    {/* Regular Cards - using CSS transition instead of motion hover */}
+                    {/* Regular Cards - Static, no fade animation */}
                     {statements.slice(1).map((s, i) => (
-                        <motion.div
+                        <div
                             key={i}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.3 }}
-                            transition={{ duration: 0.5, delay: (i + 1) * 0.1 }}
-                            className="bg-[#080808] p-8 rounded-2xl border border-white/5 hover:border-white/10 hover:-translate-y-1 transition-all flex flex-col justify-between min-h-[200px]"
-                            style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay', backgroundSize: '200px' }}
+                            className="bg-[#0d0d0d] p-8 rounded-2xl border border-white/5 hover:border-white/10 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]"
                         >
                             <p className="text-lg font-medium text-white/70 leading-relaxed">
                                 "{s.text}"
@@ -86,7 +74,7 @@ const CommunitySection = () => {
                                     {s.author}
                                 </span>
                             </div>
-                        </motion.div>
+                        </div>
                     ))}
 
                 </div>

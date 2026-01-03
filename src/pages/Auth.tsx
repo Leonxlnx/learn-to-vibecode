@@ -16,29 +16,35 @@ const signupSchema = z.object({
   email: z.string().email('Please enter a valid email'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
-// Map Supabase auth errors to generic user-friendly messages
+// Map Supabase auth errors to user-friendly messages
 const getAuthErrorMessage = (error: any): string => {
-  const errorCode = error?.code || error?.error_code || error?.message;
+  const errorCode = error?.code || error?.error_code || '';
+  const errorMsg = error?.message || '';
 
-  // Use generic messages to prevent user enumeration and info leakage
-  const errorMap: Record<string, string> = {
-    'invalid_credentials': 'Invalid email or password.',
-    'Invalid login credentials': 'Invalid email or password.',
-    'user_already_exists': 'Unable to create account. Please try again.',
-    'User already registered': 'Unable to create account. Please try again.',
-    'email_not_confirmed': 'Please check your email to confirm your account.',
-    'weak_password': 'Please choose a stronger password.',
-    'over_request_rate_limit': 'Too many attempts. Please try again later.',
-    'signup_disabled': 'Sign up is currently disabled.',
-  };
-
-  for (const [key, message] of Object.entries(errorMap)) {
-    if (errorCode?.includes(key)) {
-      return message;
-    }
+  // More specific error mapping
+  if (errorCode === 'invalid_credentials' || errorMsg.includes('Invalid login credentials')) {
+    return 'Invalid email or password. Please try again.';
+  }
+  if (errorCode === 'user_already_exists' || errorMsg.includes('User already registered')) {
+    return 'This email is already registered. Try logging in instead.';
+  }
+  if (errorCode === 'email_not_confirmed' || errorMsg.includes('Email not confirmed')) {
+    return 'Please check your email to confirm your account.';
+  }
+  if (errorCode === 'weak_password' || errorMsg.includes('weak') || errorMsg.includes('Password')) {
+    return 'Password too weak. Use at least 6 characters with letters and numbers.';
+  }
+  if (errorCode === 'over_request_rate_limit' || errorMsg.includes('rate')) {
+    return 'Too many attempts. Please wait a moment and try again.';
+  }
+  if (errorMsg.includes('User not found') || errorMsg.includes('no user')) {
+    return 'No account found with this email. Try signing up.';
+  }
+  if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
+    return 'Network error. Please check your connection.';
   }
 
-  return 'Authentication failed. Please try again.';
+  return 'Something went wrong. Please try again.';
 };
 
 const Auth = () => {
@@ -137,44 +143,47 @@ const Auth = () => {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-black flex-col p-12"
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-black"
       >
         {/* Animated Background */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-red-900/10 blur-[150px] rounded-full animate-pulse" />
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05]" />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]" />
         </div>
 
-        {/* Back button - Top Left */}
+        {/* Back button - Fixed position top left */}
         <Link to="/" className="absolute top-8 left-8 inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors group px-4 py-2 rounded-full hover:bg-white/5 z-20">
           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           <span className="font-mono text-xs uppercase tracking-widest">Back</span>
         </Link>
 
-        <div className="relative z-10 max-w-lg mt-24">
-          {/* Logo */}
-          <img src="/images/vibecode-logo.png" alt="VibeCode Logo" className="w-16 mb-8 opacity-80" />
+        {/* Main Content - Centered */}
+        <div className="relative z-10 flex flex-col justify-center items-center w-full h-full px-16">
+          <div className="max-w-md w-full">
+            {/* Logo */}
+            <img src="/images/vibecode-logo.png" alt="VibeCode Logo" className="w-16 mb-8 opacity-80" />
 
-          <h1 className="text-6xl font-black text-white leading-[0.95] tracking-tighter mb-8">
-            JOIN THE <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">REVOLUTION.</span>
-          </h1>
+            <h1 className="text-6xl font-black text-white leading-[0.95] tracking-tighter mb-8">
+              JOIN THE <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-600">REVOLUTION.</span>
+            </h1>
 
-          <div className="space-y-6">
-            {['Ship 10x Faster', 'Zero Tech Debt', 'Focus on Logic'].map((item, i) => (
-              <motion.div
-                key={item}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
-                className="flex items-center gap-4 text-white/70"
-              >
-                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-red-500">
-                  <CheckCircle2 size={16} />
-                </div>
-                <span className="text-lg font-medium">{item}</span>
-              </motion.div>
-            ))}
+            <div className="space-y-6">
+              {['Ship 10x Faster', 'Zero Tech Debt', 'Focus on Logic'].map((item, i) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  className="flex items-center gap-4 text-white/70"
+                >
+                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-red-500">
+                    <CheckCircle2 size={16} />
+                  </div>
+                  <span className="text-lg font-medium">{item}</span>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </motion.div>

@@ -81,7 +81,7 @@ const ProphetSection = () => {
     };
 
     return (
-        <section ref={sectionRef} className="relative w-full py-40 bg-[#030303] overflow-hidden">
+        <section ref={sectionRef} className="relative w-full py-40 bg-[#0a0a0a] overflow-hidden">
 
             {/* Background Glow */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-900/5 blur-[150px] rounded-full pointer-events-none" />
@@ -137,7 +137,7 @@ const ProphetSection = () => {
                                         <span className="underline-anim absolute bottom-0 left-0 w-full h-[2px] bg-red-500" />
                                     </p>
                                     <p className="text-white/40 text-sm font-mono uppercase tracking-wider mt-1">
-                                        Former Tesla AI Director
+                                        OpenAI Co-Founder • Former Tesla AI
                                     </p>
                                 </div>
                             </div>

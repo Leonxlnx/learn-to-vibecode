@@ -6,16 +6,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TargetCard = ({ title, subtitle, desc, icon: Icon, index }: any) => (
-    <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ delay: index * 0.1, duration: 0.5 }}
-        className="group relative p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] hover:border-white/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-        style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay', backgroundSize: '200px' }}
-    >
-        <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+const TargetCard = ({ title, subtitle, desc, icon: Icon }: any) => (
+    <div className="group relative p-8 rounded-3xl bg-[#0d0d0d] border border-white/5 hover:bg-[#111] hover:border-white/10 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
         <div className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 text-white">
@@ -32,7 +25,7 @@ const TargetCard = ({ title, subtitle, desc, icon: Icon, index }: any) => (
                 {desc}
             </p>
         </div>
-    </motion.div>
+    </div>
 );
 
 const WhatIsVibecodingSection = () => {

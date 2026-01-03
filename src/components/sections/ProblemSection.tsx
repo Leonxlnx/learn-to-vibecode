@@ -4,7 +4,7 @@ import { ArrowRight, TrendingUp, Clock, Zap, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 /**
- * Problem/Why Now Section - Fixed double-fade animation
+ * Problem/Why Now Section - Static cards with hover only
  */
 const ProblemSection = () => {
     const containerRef = useRef(null);
@@ -55,9 +55,6 @@ const ProblemSection = () => {
 
                 <motion.div style={{ y }} className="relative rounded-[2.5rem] bg-[#0d0d0d] border border-white/10 overflow-hidden shadow-2xl p-10 md:p-20">
 
-                    {/* Noise texture */}
-                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.02] pointer-events-none" />
-
                     {/* Inner Glow */}
                     <div className="absolute -top-[40%] left-1/2 -translate-x-1/2 w-[70%] h-[40%] bg-red-600/15 blur-[80px] rounded-full pointer-events-none" />
 
@@ -75,17 +72,12 @@ const ProblemSection = () => {
                         </p>
                     </div>
 
-                    {/* Studies Bento Grid - Fixed: removed whileInView double animation */}
+                    {/* Studies Bento Grid - Static cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                         {studies.map((study, i) => (
-                            <motion.div
+                            <div
                                 key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, amount: 0.5 }}
-                                transition={{ duration: 0.4, delay: i * 0.1 }}
-                                className="p-8 rounded-2xl border border-white/5 bg-black/40 hover:bg-black/60 hover:border-white/10 hover:-translate-y-1 transition-all cursor-default"
-                                style={{ backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')", backgroundBlendMode: 'overlay', backgroundSize: '200px' }}
+                                className="p-8 rounded-2xl border border-white/5 bg-[#080808] hover:bg-[#0c0c0c] hover:border-white/10 hover:-translate-y-1 transition-all duration-300 cursor-default"
                             >
                                 <div className="flex items-start gap-6">
                                     <div className="w-14 h-14 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 flex-shrink-0">
@@ -101,7 +93,7 @@ const ProblemSection = () => {
                                         </p>
                                     </div>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
 
