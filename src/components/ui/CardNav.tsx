@@ -185,9 +185,17 @@ const CardNav = ({
                                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                         className="absolute top-full right-0 mt-2 p-2 rounded-2xl bg-[#0a0a0a]/95 backdrop-blur-xl border border-white/10 shadow-2xl min-w-[160px]"
                                     >
+                                        <Link
+                                            to="/dashboard"
+                                            onClick={() => setShowUserMenu(false)}
+                                            className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"
+                                        >
+                                            <User size={16} />
+                                            <span>Dashboard</span>
+                                        </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 text-sm"
+                                            className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-white/70 hover:text-white hover:bg-red-500/10 hover:text-red-400 transition-all duration-300 text-sm"
                                         >
                                             <LogOut size={16} />
                                             <span>Logout</span>
@@ -273,6 +281,14 @@ const CardNav = ({
                                 <div className="w-full py-3 px-4 bg-white/5 text-white/70 font-medium rounded-xl text-center text-sm border border-white/10">
                                     {user.email}
                                 </div>
+                                <Link 
+                                    to="/dashboard" 
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="w-full py-4 bg-white text-black font-bold rounded-xl uppercase tracking-widest flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                                >
+                                    <User size={18} />
+                                    Dashboard
+                                </Link>
                                 <button
                                     onClick={() => {
                                         handleLogout();

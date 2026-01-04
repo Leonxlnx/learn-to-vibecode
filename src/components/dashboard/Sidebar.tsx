@@ -11,10 +11,10 @@ interface SidebarProps {
 }
 
 const navItems = [
-  { icon: Home, label: 'Dashboard', path: '/dashboard' },
-  { icon: BookOpen, label: 'Kurs', path: '/dashboard/course' },
-  { icon: FolderOpen, label: 'Projekte', path: '/dashboard/projects' },
-  { icon: Bookmark, label: 'Ressourcen', path: '/dashboard/resources' },
+  { icon: Home, label: 'Home', path: '/dashboard' },
+  { icon: BookOpen, label: 'Course', path: '/dashboard/course' },
+  { icon: FolderOpen, label: 'Projects', path: '/dashboard/projects' },
+  { icon: Bookmark, label: 'Resources', path: '/dashboard/resources' },
   { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
 ];
 
