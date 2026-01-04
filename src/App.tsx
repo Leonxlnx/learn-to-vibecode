@@ -81,7 +81,7 @@ const App = () => {
         {
           label: "Discord",
           description: "Join 20,000+ builders.",
-          href: "https://discord.gg/bQW2YtNB6G",
+          href: "https://discord.gg/xrCufejEa3",
           span: "col-span-2",
           icon: <MessageCircle size={18} />,
           color: "from-red-500/10 to-white/5"
