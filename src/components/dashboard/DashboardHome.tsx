@@ -122,7 +122,7 @@ const DashboardHome = ({ userName, learningPath, completedChapters }: DashboardH
                 </Link>
 
                 <a 
-                    href="https://discord.gg/bQW2YtNB6G" 
+                    href="https://discord.gg/xrCufejEa3" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="group"

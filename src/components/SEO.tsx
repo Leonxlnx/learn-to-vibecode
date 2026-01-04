@@ -52,7 +52,7 @@ const SEO = ({
                     "url": "https://learn2vibecode.vercel.app",
                     "description": "Learn vibecoding - AI-assisted development education platform",
                     "sameAs": [
-                        "https://discord.gg/bQW2YtNB6G",
+                        "https://discord.gg/xrCufejEa3",
                         "https://twitter.com/learn2vibecode"
                     ]
                 })}
