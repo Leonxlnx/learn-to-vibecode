@@ -1,12 +1,7 @@
 // AI Service for course generation
-// API key is obfuscated - DO NOT expose in client-side code in production
-// This should ideally be in a serverless function
+// Now uses secure Edge Function via Lovable Cloud
 
-const getApiKey = () => {
-    // Obfuscated key (base64 encoded, split for security)
-    const parts = ['QUl6YVN5', 'QkNkTEtU', 'dWR3bWFv', 'aXgwSUdZ', 'NW5tamRw', 'RWc1VGhU', 'TWkw'];
-    return atob(parts.join(''));
-};
+import { supabase } from '@/integrations/supabase/client';
 
 interface OnboardingData {
     name: string;
@@ -67,66 +62,37 @@ export const ALL_MODULES: Module[] = [
     { id: 'project-dashboard', title: 'Build: Dashboard App', description: 'Full-stack application', duration: '90 min', difficulty: 'advanced', required: false, order: 23 },
 ];
 
-// Generate personalized course using AI
+// Generate personalized course using secure Edge Function
 export async function generatePersonalizedCourse(data: OnboardingData): Promise<string[]> {
-    const avgExp = (data.expGeneral + data.expWebdev + data.expAppdev + data.expGamedev) / 4;
-
     try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${getApiKey()}`,
-            {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: `You are a course curator for Learn2Vibecode, a platform teaching AI-assisted development (vibecoding).
-
-Based on the user's profile, select the most relevant modules for their personalized learning path. Return ONLY a JSON array of module IDs, no explanation.
-
-Available modules: ${ALL_MODULES.map(m => `${m.id}: ${m.title} (${m.difficulty})`).join(', ')}
-
-User profile:
-- Name: ${data.name}
-- Learning path: ${data.learningPath}
-- Coding experience (0-5): ${avgExp.toFixed(1)}
-- Vibecoding experience (0-4): ${data.vibecodeLevel}
-- Dream project: ${data.dreamProject || 'Not specified'}
-
-Rules:
-1. Always include required modules (intro, setup, prompting-101, cursor, git, vercel)
-2. Skip beginner modules if avgExp >= 3
-3. Include advanced modules only if avgExp >= 3 or vibecodeLevel >= 3
-4. Match modules to dream project when possible
-5. Return 8-15 modules max
-6. Order by learning progression
-
-Return format: ["module-id-1", "module-id-2", ...]`
-                        }]
-                    }],
-                    generationConfig: {
-                        temperature: 0.3,
-                        maxOutputTokens: 500,
-                    }
-                })
+        const { data: result, error } = await supabase.functions.invoke('generate-course', {
+            body: {
+                name: data.name,
+                expGeneral: data.expGeneral,
+                expWebdev: data.expWebdev,
+                expAppdev: data.expAppdev,
+                expGamedev: data.expGamedev,
+                vibecodeLevel: data.vibecodeLevel,
+                dreamProject: data.dreamProject,
+                learningPath: data.learningPath
             }
-        );
+        });
 
-        const result = await response.json();
-        const text = result.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-        // Parse JSON from response
-        const jsonMatch = text.match(/\[[\s\S]*\]/);
-        if (jsonMatch) {
-            const moduleIds = JSON.parse(jsonMatch[0]);
-            return moduleIds.filter((id: string) => ALL_MODULES.some(m => m.id === id));
+        if (error) {
+            console.error('Edge function error:', error);
+            return generateFallbackCourse(data);
         }
+
+        if (result?.modules && result.modules.length >= 5) {
+            console.log('Course generated via:', result.method);
+            return result.modules;
+        }
+
+        return generateFallbackCourse(data);
     } catch (error) {
         console.error('AI course generation failed, using fallback:', error);
+        return generateFallbackCourse(data);
     }
-
-    // Fallback algorithm
-    return generateFallbackCourse(data);
 }
 
 // Fallback course generation without AI

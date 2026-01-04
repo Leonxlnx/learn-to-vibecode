@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, MessageCircle, Bookmark, Trophy, BookOpen, Clock } from 'lucide-react';
 import { COURSE_MODULES } from '@/data/courseContent';
+import { supabase } from '@/integrations/supabase/client';
 import Leaderboard from './Leaderboard';
 
 interface DashboardHomeProps {
@@ -19,7 +21,28 @@ const pathLabels: Record<string, { label: string; color: string }> = {
 };
 
 const DashboardHome = ({ userName, learningPath, completedChapters, userId }: DashboardHomeProps) => {
+    const [showLeaderboard, setShowLeaderboard] = useState(true);
     const pathInfo = pathLabels[learningPath] || pathLabels.beginner;
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            if (!userId) return;
+            const { data } = await supabase
+                .from('profiles')
+                .select('show_leaderboard')
+                .eq('id', userId)
+                .single();
+            
+            if (data) {
+                setShowLeaderboard(data.show_leaderboard ?? true);
+            }
+        };
+        loadSettings();
+
+        const handleUpdate = () => loadSettings();
+        window.addEventListener('progressUpdate', handleUpdate);
+        return () => window.removeEventListener('progressUpdate', handleUpdate);
+    }, [userId]);
     
     // Calculate total progress
     const totalCompleted = Object.values(completedChapters).reduce((acc, chapters) => acc + chapters.length, 0);
@@ -143,7 +166,7 @@ const DashboardHome = ({ userName, learningPath, completedChapters, userId }: Da
             </div>
 
             {/* Leaderboard */}
-            <Leaderboard currentUserId={userId} />
+            {showLeaderboard && <Leaderboard currentUserId={userId} />}
 
             {/* Footer Links */}
             <div className="flex items-center gap-4 pt-4 border-t border-white/5">

@@ -28,6 +28,8 @@ export type Database = {
           learning_path: string | null
           name: string | null
           onboarding_completed: boolean | null
+          show_coins: boolean
+          show_leaderboard: boolean
           updated_at: string | null
           vibe_coins: number | null
           vibecode_level: number | null
@@ -45,6 +47,8 @@ export type Database = {
           learning_path?: string | null
           name?: string | null
           onboarding_completed?: boolean | null
+          show_coins?: boolean
+          show_leaderboard?: boolean
           updated_at?: string | null
           vibe_coins?: number | null
           vibecode_level?: number | null
@@ -62,6 +66,8 @@ export type Database = {
           learning_path?: string | null
           name?: string | null
           onboarding_completed?: boolean | null
+          show_coins?: boolean
+          show_leaderboard?: boolean
           updated_at?: string | null
           vibe_coins?: number | null
           vibecode_level?: number | null
