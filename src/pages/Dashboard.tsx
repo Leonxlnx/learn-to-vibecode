@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { User } from '@supabase/supabase-js';
-import { Coins } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import Sidebar from '@/components/dashboard/Sidebar';
@@ -153,19 +152,10 @@ const Dashboard = () => {
   const sidebarWidth = isMobile ? 0 : (sidebarOpen ? 260 : 72);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-[#0d0d0d] text-white">
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/5 blur-[150px] rounded-full" />
-      </div>
-
-      {/* VibeCoins - Top Right, responsive */}
-      <div className={`fixed top-4 z-40 transition-all duration-300 ${isMobile ? 'right-4 left-auto' : 'right-6'}`}>
-        <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0d0d0d] border border-white/10 ${isMobile ? 'ml-14' : ''}`}>
-          <Coins size={18} className="text-yellow-500/80" />
-          <span className="font-bold text-white">{vibeCoins}</span>
-          {!isMobile && <span className="text-white/30 text-xs">VibeCoins</span>}
-        </div>
       </div>
 
       {/* Sidebar */}
@@ -174,6 +164,7 @@ const Dashboard = () => {
         userName={userName}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
+        vibeCoins={vibeCoins}
       />
 
       {/* Main Content - responds to sidebar width */}
