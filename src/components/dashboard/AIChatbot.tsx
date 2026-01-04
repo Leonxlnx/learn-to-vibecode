@@ -53,15 +53,29 @@ const AIChatbot = () => {
 
         const userMessage = input.trim();
         setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+        
+        const newMessages = [...messages, { role: 'user' as const, content: userMessage }];
+        setMessages(newMessages);
         setIsLoading(true);
 
         try {
             // Using @google/genai SDK with Gemini 2.5 Flash
             const ai = new GoogleGenAI({ apiKey });
+            
+            // Build conversation context from last 5 messages
+            const recentMessages = newMessages.slice(-5);
+            const conversationContext = recentMessages
+                .map(msg => `${msg.role === 'user' ? 'User' : 'Assistant'}: ${msg.content}`)
+                .join('\n');
+            
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash',
-                contents: `You are a helpful AI assistant for Learn2Vibecode, teaching vibecoding (AI-assisted development). Keep responses concise (2-3 sentences), helpful, encouraging. User: ${userMessage}`
+                contents: `You are a helpful AI assistant for Learn2Vibecode, teaching vibecoding (AI-assisted development). Keep responses concise (2-3 sentences), helpful, encouraging.
+
+Conversation history:
+${conversationContext}
+
+Respond to the user's latest message.`
             });
 
             const text = response.text;
