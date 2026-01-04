@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import { Coins } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 import Sidebar from '@/components/dashboard/Sidebar';
 import DashboardHome from '@/components/dashboard/DashboardHome';
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [vibeCoins, setVibeCoins] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -52,7 +54,7 @@ const Dashboard = () => {
         .select('name, learning_path, created_at')
         .eq('id', session.user.id)
         .single()
-        .then(({ data, error }) => {
+        .then(({ data }) => {
           if (data) {
             setProfile(data);
           }
@@ -110,6 +112,9 @@ const Dashboard = () => {
 
   const activePage = getActivePage();
 
+  // Sidebar width for content margin
+  const sidebarWidth = sidebarOpen ? 260 : 72;
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       {/* Background */}
@@ -127,11 +132,20 @@ const Dashboard = () => {
       </div>
 
       {/* Sidebar */}
-      <Sidebar onLogout={handleLogout} userName={userName} />
+      <Sidebar
+        onLogout={handleLogout}
+        userName={userName}
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
 
-      {/* Main Content */}
-      <main className="ml-[72px] min-h-screen transition-all duration-200">
-        <div className="p-6 lg:p-10 max-w-5xl pt-20">
+      {/* Main Content - responds to sidebar width */}
+      <motion.main
+        animate={{ marginLeft: sidebarWidth }}
+        transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+        className="min-h-screen"
+      >
+        <div className="p-6 lg:p-10 max-w-6xl pt-20">
           {activePage === 'home' && (
             <DashboardHome userName={userName} learningPath={learningPath} />
           )}
@@ -150,7 +164,7 @@ const Dashboard = () => {
             />
           )}
         </div>
-      </main>
+      </motion.main>
 
       {/* AI Chatbot */}
       <AIChatbot />

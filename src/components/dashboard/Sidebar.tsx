@@ -6,7 +6,8 @@ import { Home, BookOpen, FolderOpen, Bookmark, Settings, LogOut, Menu } from 'lu
 interface SidebarProps {
     onLogout: () => void;
     userName: string;
-    vibeCoins?: number;
+    isOpen: boolean;
+    onToggle: () => void;
 }
 
 const navItems = [
@@ -17,59 +18,58 @@ const navItems = [
     { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
 ];
 
-const Sidebar = ({ onLogout, userName, vibeCoins = 0 }: SidebarProps) => {
+const Sidebar = ({ onLogout, userName, isOpen, onToggle }: SidebarProps) => {
     const location = useLocation();
-    const [isCollapsed, setIsCollapsed] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-
-    const showExpanded = !isCollapsed || isHovered;
 
     return (
         <motion.aside
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            animate={{ width: showExpanded ? 260 : 72 }}
-            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            animate={{ width: isOpen ? 260 : 72 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="fixed left-0 top-0 h-screen bg-[#0a0a0a] border-r border-white/5 flex flex-col z-40"
         >
-            {/* Header with Logo */}
+            {/* Header with Logo / Toggle */}
             <div className="p-4 flex items-center justify-between h-16">
-                <Link to="/" className="flex items-center gap-3">
-                    {/* Show Menu icon on hover when collapsed, otherwise logo */}
-                    {isCollapsed && isHovered ? (
-                        <motion.button
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            onClick={(e) => { e.preventDefault(); setIsCollapsed(false); }}
-                            className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
-                        >
-                            <Menu size={18} />
-                        </motion.button>
-                    ) : (
+                {/* When closed and hovered: show expand button. Otherwise: show logo */}
+                {!isOpen && isHovered ? (
+                    <motion.button
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        onClick={onToggle}
+                        className="w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+                    >
+                        <Menu size={18} />
+                    </motion.button>
+                ) : (
+                    <Link to="/" className="flex items-center gap-3">
                         <img src="/images/vibecode-logo.png" alt="V" className="w-10 h-10 rounded-2xl" />
-                    )}
-                    <AnimatePresence>
-                        {showExpanded && !isCollapsed && (
-                            <motion.span
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                transition={{ duration: 0.15 }}
-                                className="font-bold text-white text-lg whitespace-nowrap"
-                            >
-                                Vibecode
-                            </motion.span>
-                        )}
-                    </AnimatePresence>
-                </Link>
-                {/* Collapse button - only when expanded */}
+                        <AnimatePresence>
+                            {isOpen && (
+                                <motion.span
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -10 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="font-bold text-white text-lg whitespace-nowrap"
+                                >
+                                    Vibecode
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
+                    </Link>
+                )}
+
+                {/* Collapse button - only when sidebar is open */}
                 <AnimatePresence>
-                    {showExpanded && !isCollapsed && (
+                    {isOpen && (
                         <motion.button
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            onClick={() => setIsCollapsed(true)}
+                            onClick={onToggle}
                             className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/30 hover:text-white transition-all"
                         >
                             <Menu size={14} />
@@ -94,11 +94,11 @@ const Sidebar = ({ onLogout, userName, vibeCoins = 0 }: SidebarProps) => {
                                             ? 'bg-white/10 text-white'
                                             : 'text-white/40 hover:text-white hover:bg-white/5'
                                         }`}
-                                    title={!showExpanded ? item.label : undefined}
+                                    title={!isOpen ? item.label : undefined}
                                 >
                                     <item.icon size={20} className="flex-shrink-0" />
                                     <AnimatePresence>
-                                        {showExpanded && (
+                                        {isOpen && (
                                             <motion.span
                                                 initial={{ opacity: 0 }}
                                                 animate={{ opacity: 1 }}
@@ -119,12 +119,12 @@ const Sidebar = ({ onLogout, userName, vibeCoins = 0 }: SidebarProps) => {
 
             {/* User Section */}
             <div className="p-3 border-t border-white/5">
-                <div className={`flex items-center gap-3 px-4 py-3 mb-1 ${!showExpanded ? 'justify-center' : ''}`}>
+                <div className={`flex items-center gap-3 px-4 py-3 mb-1 ${!isOpen ? 'justify-center' : ''}`}>
                     <div className="w-9 h-9 rounded-2xl bg-white/10 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
                         {userName.charAt(0).toUpperCase()}
                     </div>
                     <AnimatePresence>
-                        {showExpanded && (
+                        {isOpen && (
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -138,12 +138,12 @@ const Sidebar = ({ onLogout, userName, vibeCoins = 0 }: SidebarProps) => {
                 </div>
                 <button
                     onClick={onLogout}
-                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-white/30 hover:text-white hover:bg-white/5 transition-all duration-200 ${!showExpanded ? 'justify-center' : ''}`}
-                    title={!showExpanded ? 'Logout' : undefined}
+                    className={`flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-white/30 hover:text-white hover:bg-white/5 transition-all duration-200 ${!isOpen ? 'justify-center' : ''}`}
+                    title={!isOpen ? 'Logout' : undefined}
                 >
                     <LogOut size={20} className="flex-shrink-0" />
                     <AnimatePresence>
-                        {showExpanded && (
+                        {isOpen && (
                             <motion.span
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
