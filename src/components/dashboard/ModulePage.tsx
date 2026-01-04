@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Lightbulb, Zap, BookOpen, ChevronDown, ChevronRight } from 'lucide-react';
-import { COURSE_MODULES, getModuleById, Chapter } from '@/data/courseContent';
+import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight, Check, Sparkles, PlayCircle } from 'lucide-react';
+import { COURSE_MODULES, getModuleById } from '@/data/courseContent';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ModulePageProps {
@@ -12,73 +12,26 @@ interface ModulePageProps {
 const ModulePage = ({ userId }: ModulePageProps) => {
     const { moduleId } = useParams<{ moduleId: string }>();
     const module = getModuleById(moduleId || '');
-    const [expandedChapter, setExpandedChapter] = useState<string | null>(null);
     const [completedChapters, setCompletedChapters] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Load completed chapters from database
         const loadProgress = async () => {
             const { data } = await supabase
                 .from('profiles')
                 .select('completed_chapters')
                 .eq('id', userId)
                 .single();
-            
+
             if (data?.completed_chapters && moduleId) {
                 const chapters = (data.completed_chapters as Record<string, string[]>)[moduleId] || [];
                 setCompletedChapters(new Set(chapters));
             }
             setIsLoading(false);
         };
-        
-        loadProgress();
-        
-        // Auto-expand first chapter
-        if (module && module.chapters.length > 0) {
-            setExpandedChapter(module.chapters[0].id);
-        }
-    }, [moduleId, module, userId]);
 
-    const toggleComplete = async (chapterId: string, vibeCoins: number) => {
-        const newCompleted = new Set(completedChapters);
-        const isCompleting = !newCompleted.has(chapterId);
-        
-        if (isCompleting) {
-            newCompleted.add(chapterId);
-        } else {
-            newCompleted.delete(chapterId);
-        }
-        
-        setCompletedChapters(newCompleted);
-        
-        // Get current data from database
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('completed_chapters, vibe_coins')
-            .eq('id', userId)
-            .single();
-        
-        if (profile && moduleId) {
-            const allCompleted = (profile.completed_chapters as Record<string, string[]>) || {};
-            allCompleted[moduleId] = [...newCompleted];
-            
-            const newCoins = isCompleting 
-                ? (profile.vibe_coins || 0) + vibeCoins 
-                : Math.max(0, (profile.vibe_coins || 0) - vibeCoins);
-            
-            await supabase
-                .from('profiles')
-                .update({ 
-                    completed_chapters: allCompleted,
-                    vibe_coins: newCoins 
-                })
-                .eq('id', userId);
-            
-            // Trigger update in Dashboard
-            window.dispatchEvent(new Event('progressUpdate'));
-        }
-    };
+        loadProgress();
+    }, [moduleId, userId]);
 
     if (isLoading) {
         return (
@@ -103,8 +56,13 @@ const ModulePage = ({ userId }: ModulePageProps) => {
     const prevModule = currentIndex > 0 ? COURSE_MODULES[currentIndex - 1] : null;
     const nextModule = currentIndex < COURSE_MODULES.length - 1 ? COURSE_MODULES[currentIndex + 1] : null;
 
+    const totalVibeCoins = module.chapters.reduce((sum, ch) => sum + ch.vibeCoins, 0);
+    const earnedVibeCoins = module.chapters
+        .filter(ch => completedChapters.has(ch.id))
+        .reduce((sum, ch) => sum + ch.vibeCoins, 0);
+
     return (
-        <div className="space-y-8">
+        <div className="space-y-8 max-w-4xl mx-auto">
             {/* Header */}
             <div>
                 <Link
@@ -114,113 +72,102 @@ const ModulePage = ({ userId }: ModulePageProps) => {
                     <ArrowLeft size={16} />
                     Back to Course
                 </Link>
+
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                     <div>
                         <p className="text-white/30 text-sm mb-2">Module {module.number}</p>
                         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{module.title}</h1>
-                        <p className="text-white/40">{module.description}</p>
+                        <p className="text-white/40 mb-4">{module.description}</p>
+
+                        {/* AI Studio Badge */}
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30">
+                            <Sparkles size={14} className="text-blue-400" />
+                            <span className="text-sm text-blue-300 font-medium">Google AI Studio</span>
+                            <span className="text-xs text-white/40">• 100% Free & Fast</span>
+                        </div>
                     </div>
-                    <div className="px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-center">
-                        <p className="text-lg font-bold text-white">{completedChapters.size}/{module.chapters.length}</p>
-                        <p className="text-white/30 text-xs">Completed</p>
+
+                    <div className="px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-center min-w-[120px]">
+                        <p className="text-2xl font-bold text-white">{completedChapters.size}/{module.chapters.length}</p>
+                        <p className="text-white/30 text-xs mb-2">Chapters</p>
+                        <div className="text-sm text-green-400 font-medium">+{earnedVibeCoins}/{totalVibeCoins}</div>
+                        <p className="text-white/30 text-[10px]">VibeCoins</p>
                     </div>
                 </div>
             </div>
 
-            {/* Chapters */}
-            <div className="space-y-3">
+            {/* Progress Bar */}
+            <div className="relative h-2 bg-white/5 rounded-full overflow-hidden">
+                <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(completedChapters.size / module.chapters.length) * 100}%` }}
+                    transition={{ duration: 0.5, ease: 'easeOut' }}
+                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-500 to-green-400 rounded-full"
+                />
+            </div>
+
+            {/* Chapters Grid */}
+            <div className="grid gap-4">
                 {module.chapters.map((chapter, index) => {
                     const isComplete = completedChapters.has(chapter.id);
-                    const isExpanded = expandedChapter === chapter.id;
+                    const isFirst = index === 0;
+                    const prevComplete = index > 0 ? completedChapters.has(module.chapters[index - 1].id) : true;
+                    const isUnlocked = isFirst || prevComplete || isComplete;
 
                     return (
-                        <div key={chapter.id} className="rounded-2xl bg-[#0d0d0d] border border-white/5 overflow-hidden">
-                            {/* Chapter Header */}
-                            <button
-                                onClick={() => setExpandedChapter(isExpanded ? null : chapter.id)}
-                                className="w-full px-6 py-5 flex items-center justify-between hover:bg-white/5 transition-colors"
+                        <motion.div
+                            key={chapter.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                        >
+                            <Link
+                                to={isUnlocked ? `/dashboard/course/${moduleId}/${chapter.id}` : '#'}
+                                className={`block rounded-2xl bg-[#0d0d0d] border transition-all duration-300 ${isUnlocked
+                                    ? 'border-white/5 hover:border-white/20 hover:bg-white/[0.02]'
+                                    : 'border-white/5 opacity-50 cursor-not-allowed'
+                                    }`}
+                                onClick={e => !isUnlocked && e.preventDefault()}
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold ${isComplete ? 'bg-green-500/20 text-green-400' : 'bg-white/5 text-white/40'
-                                        }`}>
-                                        {isComplete ? <Check size={18} /> : index + 1}
-                                    </div>
-                                    <div className="text-left">
-                                        <p className={`font-medium ${isComplete ? 'text-white/50' : 'text-white'}`}>
-                                            {chapter.title}
-                                        </p>
-                                        <p className="text-white/30 text-sm">+{chapter.vibeCoins} ViobeCoins</p>
-                                    </div>
-                                </div>
-                                {isExpanded ? (
-                                    <ChevronDown size={20} className="text-white/30" />
-                                ) : (
-                                    <ChevronRight size={20} className="text-white/30" />
-                                )}
-                            </button>
-
-                            {/* Chapter Content */}
-                            <AnimatePresence>
-                                {isExpanded && (
-                                    <motion.div
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{ height: 'auto', opacity: 1 }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="border-t border-white/5"
-                                    >
-                                        <div className="p-6 space-y-6">
-                                            {/* Content Paragraphs */}
-                                            <div className="space-y-4">
-                                                {chapter.content.map((para, i) => (
-                                                    <p key={i} className="text-white/60 leading-relaxed">
-                                                        {para}
-                                                    </p>
-                                                ))}
-                                            </div>
-
-                                            {/* Tips */}
-                                            <div className="p-5 rounded-2xl bg-white/5">
-                                                <div className="flex items-center gap-2 mb-4">
-                                                    <Lightbulb size={16} className="text-white/40" />
-                                                    <span className="text-white/50 text-xs font-medium uppercase tracking-wider">Pro Tips</span>
-                                                </div>
-                                                <ul className="space-y-3">
-                                                    {chapter.tips.map((tip, i) => (
-                                                        <li key={i} className="text-white/50 text-sm flex items-start gap-3">
-                                                            <span className="text-white/20 mt-0.5">•</span>
-                                                            {tip}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-
-                                            {/* Task */}
-                                            {chapter.task && (
-                                                <div className="p-5 rounded-2xl bg-green-500/10 border border-green-500/20">
-                                                    <div className="flex items-center gap-2 mb-3">
-                                                        <Zap size={16} className="text-green-400" />
-                                                        <span className="text-green-400 text-xs font-medium uppercase tracking-wider">Your Task</span>
-                                                    </div>
-                                                    <p className="text-white/70">{chapter.task}</p>
-                                                </div>
-                                            )}
-
-                                            {/* Complete Button */}
-                                            <button
-                                                onClick={() => toggleComplete(chapter.id, chapter.vibeCoins)}
-                                                className={`w-full py-4 rounded-2xl font-medium transition-all ${isComplete
-                                                        ? 'bg-white/5 text-white/40'
-                                                        : 'bg-white text-black hover:bg-white/90'
-                                                    }`}
-                                            >
-                                                {isComplete ? '✓ Completed' : `Complete & Earn ${chapter.vibeCoins} ViobeCoins`}
-                                            </button>
+                                <div className="px-6 py-5 flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold transition-all ${isComplete
+                                            ? 'bg-green-500/20 text-green-400'
+                                            : isUnlocked
+                                                ? 'bg-white/5 text-white/40'
+                                                : 'bg-white/5 text-white/20'
+                                            }`}>
+                                            {isComplete ? <Check size={20} /> : index + 1}
                                         </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
+                                        <div>
+                                            <p className={`font-medium text-lg ${isComplete ? 'text-white/50' : 'text-white'}`}>
+                                                {chapter.title}
+                                            </p>
+                                            <p className="text-white/30 text-sm">
+                                                +{chapter.vibeCoins} VibeCoins
+                                                {isComplete && <span className="text-green-400 ml-2">✓ Earned</span>}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {isUnlocked && (
+                                        <div className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${isComplete
+                                            ? 'bg-green-500/10 text-green-400'
+                                            : 'bg-white/5 text-white/40 group-hover:bg-white/10'
+                                            }`}>
+                                            {isComplete ? (
+                                                <span className="text-sm font-medium">Review</span>
+                                            ) : (
+                                                <>
+                                                    <PlayCircle size={16} />
+                                                    <span className="text-sm font-medium">Start</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
+                        </motion.div>
                     );
                 })}
             </div>

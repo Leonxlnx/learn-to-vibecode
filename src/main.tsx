@@ -41,6 +41,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/course" element={<Dashboard />} />
           <Route path="/dashboard/course/:moduleId" element={<Dashboard />} />
+          <Route path="/dashboard/course/:moduleId/:chapterId" element={<Dashboard />} />
           <Route path="/dashboard/projects" element={<Dashboard />} />
           <Route path="/dashboard/resources" element={<Dashboard />} />
           <Route path="/dashboard/settings" element={<Dashboard />} />

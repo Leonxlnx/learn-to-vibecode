@@ -11,6 +11,7 @@ import DashboardProjects from '@/components/dashboard/DashboardProjects';
 import DashboardResources from '@/components/dashboard/DashboardResources';
 import DashboardSettings from '@/components/dashboard/DashboardSettings';
 import ModulePage from '@/components/dashboard/ModulePage';
+import ChapterPage from '@/components/dashboard/ChapterPage';
 import AIChatbot from '@/components/dashboard/AIChatbot';
 
 interface Profile {
@@ -138,6 +139,7 @@ const Dashboard = () => {
   // Parse current path
   const pathParts = location.pathname.split('/').filter(Boolean);
   const getActivePage = () => {
+    if (pathParts[1] === 'course' && pathParts[2] && pathParts[3]) return 'chapter';
     if (pathParts[1] === 'course' && pathParts[2]) return 'module';
     if (pathParts[1] === 'course') return 'course';
     if (pathParts[1] === 'projects') return 'projects';
@@ -179,6 +181,7 @@ const Dashboard = () => {
           )}
           {activePage === 'course' && <DashboardCourse learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} />}
           {activePage === 'module' && <ModulePage userId={user.id} />}
+          {activePage === 'chapter' && <ChapterPage userId={user.id} />}
           {activePage === 'projects' && <DashboardProjects />}
           {activePage === 'resources' && <DashboardResources />}
           {activePage === 'settings' && (
