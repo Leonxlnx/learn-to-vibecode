@@ -31,6 +31,7 @@ const Onboarding = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [showReady, setShowReady] = useState(false);
     const [data, setData] = useState<OnboardingData>({
         name: '',
         email: '',
@@ -59,7 +60,7 @@ const Onboarding = () => {
         });
     }, [navigate]);
 
-    const totalSteps = 6;
+    const totalSteps = 5; // Only 5 steps now (0-4)
 
     const nextStep = () => {
         if (step < totalSteps - 1) setStep(step + 1);
@@ -115,9 +116,10 @@ const Onboarding = () => {
             console.error('Error saving profile:', error);
         }
 
-        // Short delay for visual feedback, then navigate
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        navigate('/dashboard');
+        // Show loading for 1.5s, then show "You're ready" screen
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setIsLoading(false);
+        setShowReady(true);
     };
 
     // Path data for display
@@ -136,50 +138,133 @@ const Onboarding = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
+        <div className="min-h-screen bg-[#0d0d0d] text-white flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
             {/* Subtle red aurora */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-red-900/5 blur-[120px] rounded-full pointer-events-none" />
 
             {/* Loading Screen */}
-            {isLoading && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="fixed inset-0 bg-[#0a0a0a] z-50 flex flex-col items-center justify-center"
-                >
+            <AnimatePresence>
+                {isLoading && (
                     <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="mb-6"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed inset-0 bg-[#0d0d0d] z-50 flex flex-col items-center justify-center"
                     >
-                        <Loader2 size={40} className="text-white/40" />
+                        <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            className="mb-6"
+                        >
+                            <Loader2 size={40} className="text-white/40" />
+                        </motion.div>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="text-white/60 text-lg"
+                        >
+                            Setting up your course...
+                        </motion.p>
                     </motion.div>
-                    <p className="text-white/60 text-lg">Setting up your course...</p>
-                </motion.div>
-            )}
+                )}
+            </AnimatePresence>
 
-            {/* Progress Indicator */}
-            <div className="fixed top-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-                {Array.from({ length: totalSteps }).map((_, i) => (
+            {/* Ready Screen */}
+            <AnimatePresence>
+                {showReady && (
                     <motion.div
-                        key={i}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-red-500' : i < step ? 'w-4 bg-white/50' : 'w-4 bg-white/10'}`}
-                    />
-                ))}
-            </div>
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="fixed inset-0 bg-[#0d0d0d] z-50 flex flex-col items-center justify-center px-6"
+                    >
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
+                            className="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center mb-8"
+                        >
+                            <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ delay: 0.4, type: "spring" }}
+                            >
+                                <Check size={48} className="text-green-500" />
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.h2 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="text-4xl md:text-5xl font-black mb-4 text-center"
+                        >
+                            You're ready! 🚀
+                        </motion.h2>
+                        
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="text-white/50 text-lg mb-8 text-center"
+                        >
+                            Your personalized learning path is waiting.
+                        </motion.p>
+
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className={`inline-flex items-center gap-3 px-6 py-3 rounded-2xl mb-10 ${pathInfo[data.learningPath]?.bgColor || 'bg-green-500/20'}`}
+                        >
+                            <Sparkles size={18} className={pathInfo[data.learningPath]?.color || 'text-green-400'} />
+                            <span className={`font-bold ${pathInfo[data.learningPath]?.color || 'text-green-400'}`}>
+                                {pathInfo[data.learningPath]?.label || 'Beginner'} Path
+                            </span>
+                        </motion.div>
+
+                        <motion.button
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => navigate('/dashboard')}
+                            className="px-10 py-4 bg-white text-black font-bold rounded-2xl uppercase tracking-wider flex items-center gap-3"
+                        >
+                            Start Learning <ArrowRight size={18} />
+                        </motion.button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Progress Indicator - Only 5 steps */}
+            {!showReady && (
+                <div className="fixed top-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                    {Array.from({ length: totalSteps }).map((_, i) => (
+                        <motion.div
+                            key={i}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${i === step ? 'w-8 bg-red-500' : i < step ? 'w-4 bg-white/50' : 'w-4 bg-white/10'}`}
+                        />
+                    ))}
+                </div>
+            )}
 
             <div className="w-full max-w-lg">
                 <AnimatePresence mode="wait">
 
                     {/* Step 0: Welcome */}
-                    {step === 0 && (
+                    {step === 0 && !showReady && (
                         <motion.div
                             key="welcome"
                             variants={slideVariants}
                             initial="enter"
                             animate="center"
                             exit="exit"
+                            transition={{ duration: 0.3 }}
                             className="text-center"
                         >
                             <motion.div
@@ -209,13 +294,14 @@ const Onboarding = () => {
                     )}
 
                     {/* Step 1: Age Range */}
-                    {step === 1 && (
+                    {step === 1 && !showReady && (
                         <motion.div
                             key="age"
                             variants={slideVariants}
                             initial="enter"
                             animate="center"
                             exit="exit"
+                            transition={{ duration: 0.3 }}
                             className="text-center"
                         >
                             <h2 className="text-3xl md:text-4xl font-black mb-4">How old are you?</h2>
@@ -253,13 +339,14 @@ const Onboarding = () => {
                     )}
 
                     {/* Step 2: Programming Experience */}
-                    {step === 2 && (
+                    {step === 2 && !showReady && (
                         <motion.div
                             key="experience"
                             variants={slideVariants}
                             initial="enter"
                             animate="center"
                             exit="exit"
+                            transition={{ duration: 0.3 }}
                         >
                             <h2 className="text-3xl md:text-4xl font-black mb-4 text-center">Your Experience</h2>
                             <p className="text-white/40 mb-10 text-center">Rate yourself in each area (1 = None, 5 = Expert)</p>
@@ -305,13 +392,14 @@ const Onboarding = () => {
                     )}
 
                     {/* Step 3: Vibecoding Level */}
-                    {step === 3 && (
+                    {step === 3 && !showReady && (
                         <motion.div
                             key="vibecode"
                             variants={slideVariants}
                             initial="enter"
                             animate="center"
                             exit="exit"
+                            transition={{ duration: 0.3 }}
                         >
                             <h2 className="text-3xl md:text-4xl font-black mb-4 text-center">AI Coding Experience</h2>
                             <p className="text-white/40 mb-10 text-center">Have you used AI to help build software?</p>
@@ -349,14 +437,15 @@ const Onboarding = () => {
                         </motion.div>
                     )}
 
-                    {/* Step 4: Dream Project */}
-                    {step === 4 && (
+                    {/* Step 4: Dream Project (Final Step) */}
+                    {step === 4 && !showReady && (
                         <motion.div
                             key="dream"
                             variants={slideVariants}
                             initial="enter"
                             animate="center"
                             exit="exit"
+                            transition={{ duration: 0.3 }}
                         >
                             <h2 className="text-3xl md:text-4xl font-black mb-4 text-center">Your Dream Project</h2>
                             <p className="text-white/40 mb-10 text-center">What do you dream of building?</p>
@@ -384,46 +473,6 @@ const Onboarding = () => {
                                     Complete <Check size={18} />
                                 </motion.button>
                             </div>
-                        </motion.div>
-                    )}
-
-                    {/* Step 5: Complete */}
-                    {step === 5 && (
-                        <motion.div
-                            key="complete"
-                            variants={slideVariants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            className="text-center"
-                        >
-                            <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                                className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-8"
-                            >
-                                <Check size={36} className="text-green-500" />
-                            </motion.div>
-
-                            <h2 className="text-3xl md:text-4xl font-black mb-4">You're ready!</h2>
-                            <p className="text-white/40 mb-8">Your personalized course is waiting for you.</p>
-
-                            <div className={`inline-flex items-center gap-3 px-6 py-3 rounded-2xl mb-10 ${pathInfo[data.learningPath]?.bgColor || 'bg-green-500/20'}`}>
-                                <Sparkles size={18} className={pathInfo[data.learningPath]?.color || 'text-green-400'} />
-                                <span className={`font-bold ${pathInfo[data.learningPath]?.color || 'text-green-400'}`}>
-                                    {pathInfo[data.learningPath]?.label || 'Beginner'} Path
-                                </span>
-                            </div>
-
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => navigate('/dashboard')}
-                                className="px-10 py-4 bg-white text-black font-bold rounded-2xl uppercase tracking-wider flex items-center gap-3 mx-auto"
-                            >
-                                Start Learning <ArrowRight size={18} />
-                            </motion.button>
                         </motion.div>
                     )}
 

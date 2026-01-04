@@ -136,7 +136,7 @@ const AIChatbot = () => {
       }));
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-2.5-flash',
         contents: [
           { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
           { role: 'model', parts: [{ text: 'Got it! I am the Learn2Vibecode Assistant and happy to help with any questions about Vibecoding and the platform.' }] },
