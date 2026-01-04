@@ -20,6 +20,8 @@ interface Profile {
   created_at: string;
   vibe_coins: number;
   completed_chapters: Record<string, string[]>;
+  show_coins: boolean;
+  show_leaderboard: boolean;
 }
 
 const Dashboard = () => {
@@ -68,7 +70,7 @@ const Dashboard = () => {
       // Fetch profile
       supabase
         .from('profiles')
-        .select('name, learning_path, created_at, vibe_coins, completed_chapters')
+        .select('name, learning_path, created_at, vibe_coins, completed_chapters, show_coins, show_leaderboard')
         .eq('id', session.user.id)
         .single()
         .then(({ data }) => {
@@ -79,6 +81,8 @@ const Dashboard = () => {
               created_at: data.created_at || '',
               vibe_coins: data.vibe_coins || 0,
               completed_chapters: (data.completed_chapters as Record<string, string[]>) || {},
+              show_coins: data.show_coins ?? true,
+              show_leaderboard: data.show_leaderboard ?? true,
             });
             setVibeCoins(data.vibe_coins || 0);
           }
@@ -91,7 +95,7 @@ const Dashboard = () => {
       if (user) {
         supabase
           .from('profiles')
-          .select('vibe_coins, completed_chapters')
+          .select('vibe_coins, completed_chapters, show_coins, show_leaderboard')
           .eq('id', user.id)
           .single()
           .then(({ data }) => {
@@ -101,6 +105,8 @@ const Dashboard = () => {
                 ...prev,
                 vibe_coins: data.vibe_coins || 0,
                 completed_chapters: (data.completed_chapters as Record<string, string[]>) || {},
+                show_coins: data.show_coins ?? true,
+                show_leaderboard: data.show_leaderboard ?? true,
               } : null);
             }
           });
@@ -167,6 +173,7 @@ const Dashboard = () => {
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         vibeCoins={vibeCoins}
+        showCoins={profile?.show_coins ?? true}
       />
 
       {/* Main Content - responds to sidebar width */}
@@ -192,10 +199,11 @@ const Dashboard = () => {
                 learningPath,
                 createdAt,
               }}
+              userId={user.id}
               onProfileUpdate={() => {
                 supabase
                   .from('profiles')
-                  .select('name, learning_path, created_at, vibe_coins, completed_chapters')
+                  .select('name, learning_path, created_at, vibe_coins, completed_chapters, show_coins, show_leaderboard')
                   .eq('id', user.id)
                   .single()
                   .then(({ data }) => {
@@ -206,6 +214,8 @@ const Dashboard = () => {
                         created_at: data.created_at || '',
                         vibe_coins: data.vibe_coins || 0,
                         completed_chapters: (data.completed_chapters as Record<string, string[]>) || {},
+                        show_coins: data.show_coins ?? true,
+                        show_leaderboard: data.show_leaderboard ?? true,
                       });
                     }
                   });

@@ -9,6 +9,7 @@ interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   vibeCoins?: number;
+  showCoins?: boolean;
 }
 
 const navItems = [
@@ -19,7 +20,7 @@ const navItems = [
   { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
 ];
 
-const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0 }: SidebarProps) => {
+const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0, showCoins = true }: SidebarProps) => {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -111,11 +112,13 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0 }: Sideba
               {/* User Section */}
               <div className="p-4 border-t border-white/5">
               {/* VibeCoins */}
-                <div className="flex items-center gap-2 px-4 py-3 mb-2 rounded-xl bg-white/5">
-                  <Coins size={16} className="text-white/60" />
-                  <span className="font-bold text-white text-sm">{vibeCoins}</span>
-                  <span className="text-white/30 text-xs">VibeCoins</span>
-                </div>
+                {showCoins && (
+                  <div className="flex items-center gap-2 px-4 py-3 mb-2 rounded-xl bg-white/5">
+                    <Coins size={16} className="text-white/60" />
+                    <span className="font-bold text-white text-sm">{vibeCoins}</span>
+                    <span className="text-white/30 text-xs">VibeCoins</span>
+                  </div>
+                )}
                 
                 <div className="flex items-center gap-3 px-4 py-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold">
@@ -250,23 +253,25 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0 }: Sideba
       {/* User Section */}
       <div className="p-3 border-t border-white/5">
         {/* VibeCoins */}
-        <div className={`flex items-center gap-2 px-3 py-2.5 mb-2 rounded-xl bg-white/5 ${!isOpen ? 'justify-center' : ''}`}>
-          <Coins size={16} className="text-white/60 flex-shrink-0" />
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                exit={{ opacity: 0, width: 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex items-center gap-1.5 overflow-hidden"
-              >
-                <span className="font-bold text-white text-sm">{vibeCoins}</span>
-                <span className="text-white/30 text-xs whitespace-nowrap">VibeCoins</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        {showCoins && (
+          <div className={`flex items-center gap-2 px-3 py-2.5 mb-2 rounded-xl bg-white/5 ${!isOpen ? 'justify-center' : ''}`}>
+            <Coins size={16} className="text-white/60 flex-shrink-0" />
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: 'auto' }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center gap-1.5 overflow-hidden"
+                >
+                  <span className="font-bold text-white text-sm">{vibeCoins}</span>
+                  <span className="text-white/30 text-xs whitespace-nowrap">VibeCoins</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        )}
         
         <div className={`flex items-center gap-3 px-4 py-3 mb-1 ${!isOpen ? 'justify-center' : ''}`}>
           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">

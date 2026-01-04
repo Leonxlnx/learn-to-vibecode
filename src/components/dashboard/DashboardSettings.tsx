@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { User, Mail, Zap, Calendar, Check, X, Pencil, Trash2, AlertTriangle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { User, Mail, Zap, Calendar, Check, X, Pencil, Trash2, AlertTriangle, Coins, Trophy } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ interface DashboardSettingsProps {
         learningPath: string;
         createdAt: string;
     };
+    userId: string;
     onProfileUpdate?: () => void;
 }
 
@@ -22,7 +23,7 @@ const pathLabels: Record<string, { label: string; color: string; desc: string }>
     expert: { label: 'Expert', color: 'text-purple-400', desc: 'Advanced techniques only' },
 };
 
-const DashboardSettings = ({ profile, onProfileUpdate }: DashboardSettingsProps) => {
+const DashboardSettings = ({ profile, userId, onProfileUpdate }: DashboardSettingsProps) => {
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [newName, setNewName] = useState(profile.name);
@@ -30,7 +31,45 @@ const DashboardSettings = ({ profile, onProfileUpdate }: DashboardSettingsProps)
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteConfirmText, setDeleteConfirmText] = useState('');
+    const [showCoins, setShowCoins] = useState(true);
+    const [showLeaderboard, setShowLeaderboard] = useState(true);
+    const [loadingSettings, setLoadingSettings] = useState(true);
     const pathInfo = pathLabels[profile.learningPath] || pathLabels.beginner;
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            const { data } = await supabase
+                .from('profiles')
+                .select('show_coins, show_leaderboard')
+                .eq('id', userId)
+                .single();
+            
+            if (data) {
+                setShowCoins(data.show_coins ?? true);
+                setShowLeaderboard(data.show_leaderboard ?? true);
+            }
+            setLoadingSettings(false);
+        };
+        loadSettings();
+    }, [userId]);
+
+    const toggleSetting = async (setting: 'show_coins' | 'show_leaderboard', value: boolean) => {
+        const setter = setting === 'show_coins' ? setShowCoins : setShowLeaderboard;
+        setter(value);
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({ [setting]: value })
+            .eq('id', userId);
+
+        if (error) {
+            toast.error('Failed to update setting');
+            setter(!value);
+        } else {
+            toast.success('Setting updated');
+            window.dispatchEvent(new Event('progressUpdate'));
+        }
+    };
 
     const handleSave = async () => {
         if (!newName.trim()) return;
@@ -174,6 +213,55 @@ const DashboardSettings = ({ profile, onProfileUpdate }: DashboardSettingsProps)
                         <p className="text-white/30 text-sm">{pathInfo.desc}</p>
                     </div>
                 </div>
+            </div>
+
+            {/* Display Settings */}
+            <div className="p-6 rounded-3xl bg-[#0d0d0d] border border-white/5 space-y-4">
+                <h2 className="text-lg font-medium text-white">Display Settings</h2>
+
+                {loadingSettings ? (
+                    <div className="py-4 text-center text-white/30">Loading...</div>
+                ) : (
+                    <div className="space-y-3">
+                        {/* Show VibeCoins Toggle */}
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                                    <Coins size={18} className="text-white/40" />
+                                </div>
+                                <div>
+                                    <p className="text-white font-medium">Show VibeCoins</p>
+                                    <p className="text-white/30 text-sm">Display coins in sidebar and chapters</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => toggleSetting('show_coins', !showCoins)}
+                                className={`w-12 h-7 rounded-full transition-all ${showCoins ? 'bg-white' : 'bg-white/10'}`}
+                            >
+                                <div className={`w-5 h-5 rounded-full transition-all ${showCoins ? 'bg-black ml-6' : 'bg-white/30 ml-1'}`} />
+                            </button>
+                        </div>
+
+                        {/* Show Leaderboard Toggle */}
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                                    <Trophy size={18} className="text-white/40" />
+                                </div>
+                                <div>
+                                    <p className="text-white font-medium">Show Leaderboard</p>
+                                    <p className="text-white/30 text-sm">Display leaderboard on dashboard home</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => toggleSetting('show_leaderboard', !showLeaderboard)}
+                                className={`w-12 h-7 rounded-full transition-all ${showLeaderboard ? 'bg-white' : 'bg-white/10'}`}
+                            >
+                                <div className={`w-5 h-5 rounded-full transition-all ${showLeaderboard ? 'bg-black ml-6' : 'bg-white/30 ml-1'}`} />
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Member Since */}

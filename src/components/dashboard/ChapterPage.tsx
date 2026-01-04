@@ -16,6 +16,7 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
     const module = getModuleById(moduleId || '');
     const [isComplete, setIsComplete] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [showCoins, setShowCoins] = useState(true);
 
     const chapter = module?.chapters.find(c => c.id === chapterId);
     const chapterIndex = module?.chapters.findIndex(c => c.id === chapterId) ?? -1;
@@ -30,13 +31,16 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
         const loadProgress = async () => {
             const { data } = await supabase
                 .from('profiles')
-                .select('completed_chapters')
+                .select('completed_chapters, show_coins')
                 .eq('id', userId)
                 .single();
 
-            if (data?.completed_chapters && moduleId && chapterId) {
-                const chapters = (data.completed_chapters as Record<string, string[]>)[moduleId] || [];
-                setIsComplete(chapters.includes(chapterId));
+            if (data) {
+                setShowCoins(data.show_coins ?? true);
+                if (data.completed_chapters && moduleId && chapterId) {
+                    const chapters = (data.completed_chapters as Record<string, string[]>)[moduleId] || [];
+                    setIsComplete(chapters.includes(chapterId));
+                }
             }
             setIsLoading(false);
         };
@@ -246,12 +250,17 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
                     }`}
             >
                 {isComplete ? (
-                    <span className="flex items-center justify-center gap-2">
-                        <Check size={20} />
-                        Completed - +{chapter.vibeCoins} VibeCoins earned
-                    </span>
+                    <div className="flex flex-col items-center">
+                        <span className="flex items-center gap-2">
+                            <Check size={20} />
+                            Completed
+                        </span>
+                        {showCoins && (
+                            <span className="text-sm font-normal text-white/50 mt-1">+{chapter.vibeCoins} VibeCoins</span>
+                        )}
+                    </div>
                 ) : (
-                    <span>Complete & Earn {chapter.vibeCoins} VibeCoins</span>
+                    <span>Complete</span>
                 )}
             </motion.button>
 
