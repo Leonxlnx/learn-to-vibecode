@@ -17,6 +17,7 @@ export type Database = {
       profiles: {
         Row: {
           age_range: string | null
+          completed_chapters: Json | null
           created_at: string | null
           dream_project: string | null
           exp_appdev: number | null
@@ -28,10 +29,12 @@ export type Database = {
           name: string | null
           onboarding_completed: boolean | null
           updated_at: string | null
+          vibe_coins: number | null
           vibecode_level: number | null
         }
         Insert: {
           age_range?: string | null
+          completed_chapters?: Json | null
           created_at?: string | null
           dream_project?: string | null
           exp_appdev?: number | null
@@ -43,10 +46,12 @@ export type Database = {
           name?: string | null
           onboarding_completed?: boolean | null
           updated_at?: string | null
+          vibe_coins?: number | null
           vibecode_level?: number | null
         }
         Update: {
           age_range?: string | null
+          completed_chapters?: Json | null
           created_at?: string | null
           dream_project?: string | null
           exp_appdev?: number | null
@@ -58,6 +63,7 @@ export type Database = {
           name?: string | null
           onboarding_completed?: boolean | null
           updated_at?: string | null
+          vibe_coins?: number | null
           vibecode_level?: number | null
         }
         Relationships: []

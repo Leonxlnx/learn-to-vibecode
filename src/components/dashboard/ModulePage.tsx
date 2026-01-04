@@ -3,43 +3,90 @@ import { Link, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Lightbulb, Zap, BookOpen, ChevronDown, ChevronRight } from 'lucide-react';
 import { COURSE_MODULES, getModuleById, Chapter } from '@/data/courseContent';
+import { supabase } from '@/integrations/supabase/client';
 
-const ModulePage = () => {
+interface ModulePageProps {
+    userId: string;
+}
+
+const ModulePage = ({ userId }: ModulePageProps) => {
     const { moduleId } = useParams<{ moduleId: string }>();
     const module = getModuleById(moduleId || '');
     const [expandedChapter, setExpandedChapter] = useState<string | null>(null);
     const [completedChapters, setCompletedChapters] = useState<Set<string>>(new Set());
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Load completed chapters from localStorage
-        const saved = localStorage.getItem(`module_${moduleId}_completed`);
-        if (saved) {
-            setCompletedChapters(new Set(JSON.parse(saved)));
-        }
+        // Load completed chapters from database
+        const loadProgress = async () => {
+            const { data } = await supabase
+                .from('profiles')
+                .select('completed_chapters')
+                .eq('id', userId)
+                .single();
+            
+            if (data?.completed_chapters && moduleId) {
+                const chapters = (data.completed_chapters as Record<string, string[]>)[moduleId] || [];
+                setCompletedChapters(new Set(chapters));
+            }
+            setIsLoading(false);
+        };
+        
+        loadProgress();
+        
         // Auto-expand first chapter
         if (module && module.chapters.length > 0) {
             setExpandedChapter(module.chapters[0].id);
         }
-    }, [moduleId, module]);
+    }, [moduleId, module, userId]);
 
-    const toggleComplete = (chapterId: string, vibeCoins: number) => {
+    const toggleComplete = async (chapterId: string, vibeCoins: number) => {
         const newCompleted = new Set(completedChapters);
-        if (newCompleted.has(chapterId)) {
-            newCompleted.delete(chapterId);
-            // Remove vibecoins
-            const current = parseInt(localStorage.getItem('vibecoins') || '0', 10);
-            localStorage.setItem('vibecoins', String(Math.max(0, current - vibeCoins)));
-        } else {
+        const isCompleting = !newCompleted.has(chapterId);
+        
+        if (isCompleting) {
             newCompleted.add(chapterId);
-            // Add vibecoins
-            const current = parseInt(localStorage.getItem('vibecoins') || '0', 10);
-            localStorage.setItem('vibecoins', String(current + vibeCoins));
+        } else {
+            newCompleted.delete(chapterId);
         }
+        
         setCompletedChapters(newCompleted);
-        localStorage.setItem(`module_${moduleId}_completed`, JSON.stringify([...newCompleted]));
-        // Trigger storage event for ViobeCoins update
-        window.dispatchEvent(new Event('storage'));
+        
+        // Get current data from database
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('completed_chapters, vibe_coins')
+            .eq('id', userId)
+            .single();
+        
+        if (profile && moduleId) {
+            const allCompleted = (profile.completed_chapters as Record<string, string[]>) || {};
+            allCompleted[moduleId] = [...newCompleted];
+            
+            const newCoins = isCompleting 
+                ? (profile.vibe_coins || 0) + vibeCoins 
+                : Math.max(0, (profile.vibe_coins || 0) - vibeCoins);
+            
+            await supabase
+                .from('profiles')
+                .update({ 
+                    completed_chapters: allCompleted,
+                    vibe_coins: newCoins 
+                })
+                .eq('id', userId);
+            
+            // Trigger update in Dashboard
+            window.dispatchEvent(new Event('progressUpdate'));
+        }
     };
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center py-20">
+                <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            </div>
+        );
+    }
 
     if (!module) {
         return (
