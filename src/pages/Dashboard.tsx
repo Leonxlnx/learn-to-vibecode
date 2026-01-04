@@ -18,6 +18,8 @@ interface Profile {
   name: string;
   learning_path: string;
   created_at: string;
+  vibe_coins: number;
+  completed_chapters: Record<string, string[]>;
 }
 
 const Dashboard = () => {
@@ -51,30 +53,50 @@ const Dashboard = () => {
       // Fetch profile
       supabase
         .from('profiles')
-        .select('name, learning_path, created_at')
+        .select('name, learning_path, created_at, vibe_coins, completed_chapters')
         .eq('id', session.user.id)
         .single()
         .then(({ data }) => {
           if (data) {
-            setProfile(data);
+            setProfile({
+              name: data.name || '',
+              learning_path: data.learning_path || 'beginner',
+              created_at: data.created_at || '',
+              vibe_coins: data.vibe_coins || 0,
+              completed_chapters: (data.completed_chapters as Record<string, string[]>) || {},
+            });
+            setVibeCoins(data.vibe_coins || 0);
           }
           setLoading(false);
         });
     });
 
-    // Load vibecoins
-    const loadCoins = () => {
-      const saved = localStorage.getItem('vibecoins');
-      setVibeCoins(saved ? parseInt(saved, 10) : 0);
+    // Listen for custom progress update events
+    const handleProgressUpdate = () => {
+      if (user) {
+        supabase
+          .from('profiles')
+          .select('vibe_coins, completed_chapters')
+          .eq('id', user.id)
+          .single()
+          .then(({ data }) => {
+            if (data) {
+              setVibeCoins(data.vibe_coins || 0);
+              setProfile(prev => prev ? {
+                ...prev,
+                vibe_coins: data.vibe_coins || 0,
+                completed_chapters: (data.completed_chapters as Record<string, string[]>) || {},
+              } : null);
+            }
+          });
+      }
     };
-    loadCoins();
-
-    // Listen for storage changes
-    window.addEventListener('storage', loadCoins);
+    
+    window.addEventListener('progressUpdate', handleProgressUpdate);
 
     return () => {
       subscription.unsubscribe();
-      window.removeEventListener('storage', loadCoins);
+      window.removeEventListener('progressUpdate', handleProgressUpdate);
     };
   }, [navigate]);
 
@@ -147,10 +169,10 @@ const Dashboard = () => {
       >
         <div className="p-6 lg:p-10 max-w-6xl pt-20">
           {activePage === 'home' && (
-            <DashboardHome userName={userName} learningPath={learningPath} />
+            <DashboardHome userName={userName} learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} />
           )}
-          {activePage === 'course' && <DashboardCourse learningPath={learningPath} />}
-          {activePage === 'module' && <ModulePage />}
+          {activePage === 'course' && <DashboardCourse learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} />}
+          {activePage === 'module' && <ModulePage userId={user.id} />}
           {activePage === 'projects' && <DashboardProjects />}
           {activePage === 'resources' && <DashboardResources />}
           {activePage === 'settings' && (

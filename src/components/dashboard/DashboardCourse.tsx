@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Check, ArrowRight, Clock } from 'lucide-react';
@@ -6,24 +5,15 @@ import { COURSE_MODULES } from '@/data/courseContent';
 
 interface DashboardCourseProps {
     learningPath: string;
+    completedChapters: Record<string, string[]>;
 }
 
-const DashboardCourse = ({ learningPath }: DashboardCourseProps) => {
-    const [completedModules, setCompletedModules] = useState<Record<string, number>>({});
-
-    useEffect(() => {
-        // Load completion status for all modules
-        const status: Record<string, number> = {};
-        COURSE_MODULES.forEach(mod => {
-            const saved = localStorage.getItem(`module_${mod.id}_completed`);
-            if (saved) {
-                status[mod.id] = JSON.parse(saved).length;
-            } else {
-                status[mod.id] = 0;
-            }
-        });
-        setCompletedModules(status);
-    }, []);
+const DashboardCourse = ({ learningPath, completedChapters }: DashboardCourseProps) => {
+    // Calculate completion status from props (database data)
+    const completedModules: Record<string, number> = {};
+    COURSE_MODULES.forEach(mod => {
+        completedModules[mod.id] = completedChapters[mod.id]?.length || 0;
+    });
 
     const totalCompleted = Object.values(completedModules).reduce((a, b) => a + b, 0);
     const totalChapters = COURSE_MODULES.reduce((t, m) => t + m.chapters.length, 0);
