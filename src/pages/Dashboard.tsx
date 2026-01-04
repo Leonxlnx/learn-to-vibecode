@@ -30,6 +30,21 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [vibeCoins, setVibeCoins] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile and auto-close sidebar
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setSidebarOpen(false);
+      }
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -134,8 +149,8 @@ const Dashboard = () => {
 
   const activePage = getActivePage();
 
-  // Sidebar width for content margin
-  const sidebarWidth = sidebarOpen ? 260 : 72;
+  // Sidebar width for content margin (0 on mobile)
+  const sidebarWidth = isMobile ? 0 : (sidebarOpen ? 260 : 72);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -144,12 +159,12 @@ const Dashboard = () => {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-900/5 blur-[150px] rounded-full" />
       </div>
 
-      {/* ViobeCoins - Top Right */}
-      <div className="fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-2xl bg-[#0d0d0d] border border-white/10">
-        <Coins size={20} className="text-white/50" />
-        <div className="text-right">
-          <p className="text-lg font-bold text-white">{vibeCoins}</p>
-          <p className="text-white/30 text-xs -mt-0.5">ViobeCoins</p>
+      {/* VibeCoins - Top Right, responsive */}
+      <div className={`fixed top-4 z-40 transition-all duration-300 ${isMobile ? 'right-4 left-auto' : 'right-6'}`}>
+        <div className={`flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0d0d0d] border border-white/10 ${isMobile ? 'ml-14' : ''}`}>
+          <Coins size={18} className="text-yellow-500/80" />
+          <span className="font-bold text-white">{vibeCoins}</span>
+          {!isMobile && <span className="text-white/30 text-xs">VibeCoins</span>}
         </div>
       </div>
 
@@ -167,7 +182,7 @@ const Dashboard = () => {
         transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
         className="min-h-screen"
       >
-        <div className="p-6 lg:p-10 max-w-6xl pt-20">
+        <div className={`p-4 sm:p-6 lg:p-10 max-w-6xl ${isMobile ? 'pt-20' : 'pt-20'}`}>
           {activePage === 'home' && (
             <DashboardHome userName={userName} learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} />
           )}
