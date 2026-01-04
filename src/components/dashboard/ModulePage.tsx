@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Sparkles, PlayCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, PlayCircle } from 'lucide-react';
 import { COURSE_MODULES, getModuleById } from '@/data/courseContent';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -79,12 +79,10 @@ const ModulePage = ({ userId }: ModulePageProps) => {
                         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{module.title}</h1>
                         <p className="text-white/40 mb-4">{module.description}</p>
 
-                        {/* AI Studio Badge */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30">
-                            <Sparkles size={14} className="text-blue-400" />
-                            <span className="text-sm text-blue-300 font-medium">Google AI Studio</span>
-                            <span className="text-xs text-white/40">• 100% Free & Fast</span>
-                        </div>
+                        {/* AI Studio Note */}
+                        <p className="text-sm text-white/40 italic">
+                            📝 Note: We are using Google AI Studio since you don't have to pay for it and it is great for demonstration purposes.
+                        </p>
                     </div>
 
                     <div className="px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-center min-w-[120px]">

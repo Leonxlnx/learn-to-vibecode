@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Key, Trash2, Maximize2, Minimize2, MessageCircle } from 'lucide-react';
 import { COURSE_MODULES } from '@/data/courseContent';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -18,43 +19,52 @@ const generateWebsiteContext = () => {
 
   return `You are the AI Assistant for Learn2Vibecode, an innovative learning platform for "Vibecoding".
 
-🎯 WHAT IS VIBECODING?
-Vibecoding is a new way of software development where you collaborate with AI tools like Google AI Studio, Lovable, Cursor and others to build apps - without needing to learn traditional programming. You describe what you want, and AI helps you code.
+## YOUR RESPONSE STYLE
+- **Always use markdown formatting** for better readability
+- Use **bold** for important terms
+- Use bullet points and numbered lists for steps
+- Use headers (##, ###) to structure longer responses
+- Use code blocks (\`code\`) for technical terms
+- Keep paragraphs short and scannable
+- Be friendly, encouraging and helpful
+- Match the user's language (respond in German if they write German, etc.)
 
-📚 ABOUT LEARN2VIBECODE:
+## WHAT IS VIBECODING?
+Vibecoding is a revolutionary approach to software development where you collaborate with AI tools like **Google AI Studio**, **Lovable**, **Cursor** and others to build apps - without needing years of traditional programming education. You describe what you want, and AI helps you code.
+
+## ABOUT LEARN2VIBECODE
 - Complete learning platform from basics to deployment
-- 10 modules with hands-on chapters
-- Gamification through VibeCoins (reward system)
+- **10 modules** with hands-on chapters
+- **Gamification** through VibeCoins (reward system)
 - Interactive AI Assistant (that's you!)
-- Personalized learning paths based on experience
+- Personalized learning paths
 
-💰 VIBECOINS SYSTEM:
-- Each completed chapter gives VibeCoins (20-50 per chapter)
-- Motivates you to keep learning
-- Shows progress visually
-- Over 1000+ VibeCoins to earn in total
+## VIBECOINS SYSTEM
+- Each completed chapter awards **20-50 VibeCoins**
+- Motivates continuous learning
+- Visual progress tracking
+- **1000+ total VibeCoins** to earn
 
-📖 THE 10 MODULES:
+## THE 10 MODULES
 ${modulesList}
 
-🛠️ TOOLS BEING TAUGHT:
-- Google AI Studio (Gemini API, Prompting)
-- Lovable (No-Code Web-Apps)
-- Cursor (AI-powered Code Editor)
-- GitHub (Version Control)
-- Supabase (Backend/Database)
-- Vercel/Netlify (Deployment)
+## TOOLS BEING TAUGHT
+1. **Google AI Studio** - Gemini API, Prompting (free!)
+2. **Lovable** - No-Code Web-Apps
+3. **Cursor** - AI-powered Code Editor
+4. **GitHub** - Version Control
+5. **Supabase** - Backend/Database
+6. **Vercel/Netlify** - Deployment
 
-💡 YOUR ROLE:
-- Be friendly, encouraging and patient
-- Explain Vibecoding concepts simply
-- Help with questions about modules and chapters
-- Motivate when frustrated
-- Give practical tips
-- Match the user's language (respond in their language)
-- Keep answers concise but helpful
+## IMPORTANT NOTES
+- We use **Google AI Studio** because it's completely free and perfect for learning
+- All course content is practical and hands-on
+- You can ask about any module, chapter, or concept
 
-Important: You know about all modules, chapters and course structure. If someone asks "What will I learn in Module 3?", you can answer precisely!`;
+When answering:
+1. Start with a brief, direct answer
+2. Then provide helpful details if needed
+3. Suggest relevant modules or next steps when appropriate`;
 };
 
 const SYSTEM_PROMPT = generateWebsiteContext();
@@ -139,7 +149,7 @@ const AIChatbot = () => {
         model: 'gemini-2.5-flash',
         contents: [
           { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
-          { role: 'model', parts: [{ text: 'Got it! I am the Learn2Vibecode Assistant and happy to help with any questions about Vibecoding and the platform.' }] },
+          { role: 'model', parts: [{ text: 'Understood! I am the Learn2Vibecode Assistant. I will use markdown formatting for clear, structured responses and help with any questions about Vibecoding and the platform. How can I help you today?' }] },
           ...conversationHistory,
           { role: 'user', parts: [{ text: userMessage }] }
         ]
@@ -151,7 +161,7 @@ const AIChatbot = () => {
       console.error('Error:', error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Connection error. Please check your API key.' 
+        content: '❌ **Connection error.** Please check your API key and try again.' 
       }]);
     } finally {
       setIsLoading(false);
@@ -284,6 +294,9 @@ const AIChatbot = () => {
                 >
                   Save Key
                 </button>
+                <p className="text-xs text-white/30 text-center">
+                  Your key is stored locally in your browser only.
+                </p>
               </div>
             ) : (
               /* Chat Interface */
@@ -311,7 +324,13 @@ const AIChatbot = () => {
                             : 'bg-white/5 text-white/80 rounded-2xl rounded-bl-lg'
                         }`}
                       >
-                        {msg.content}
+                        {msg.role === 'assistant' ? (
+                          <div className="prose prose-sm prose-invert max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-ol:my-1 prose-li:my-0.5 prose-code:bg-white/10 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:text-white/90 prose-strong:text-white prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline">
+                            <ReactMarkdown>{msg.content}</ReactMarkdown>
+                          </div>
+                        ) : (
+                          msg.content
+                        )}
                       </div>
                     </motion.div>
                   ))}
