@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Sparkles, Loader2, Key } from 'lucide-react';
+import { GoogleGenAI } from '@google/genai';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -56,36 +57,22 @@ const AIChatbot = () => {
         setIsLoading(true);
 
         try {
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: `You are a helpful AI assistant for Learn2Vibecode, teaching vibecoding (AI-assisted development with Cursor, Claude, v0).
+            // Using @google/genai SDK with Gemini 2.5 Flash
+            const ai = new GoogleGenAI({ apiKey });
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: `You are a helpful AI assistant for Learn2Vibecode, teaching vibecoding (AI-assisted development). Keep responses concise (2-3 sentences), helpful, encouraging. User: ${userMessage}`
+            });
 
-Keep responses concise (2-3 sentences), helpful, encouraging. Use simple language.
-
-User: ${userMessage}`
-                            }]
-                        }],
-                        generationConfig: { temperature: 0.7, maxOutputTokens: 200 }
-                    })
-                }
-            );
-
-            const data = await response.json();
-            const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
+            const text = response.text;
             if (text) {
                 setMessages(prev => [...prev, { role: 'assistant', content: text }]);
-            } else if (data.error) {
-                setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${data.error.message}` }]);
             }
-        } catch {
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Connection failed. Check your API key.' }]);
+        } catch (error: any) {
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: error.message || 'Connection failed. Check your API key.'
+            }]);
         } finally {
             setIsLoading(false);
         }
@@ -148,7 +135,7 @@ User: ${userMessage}`
                                 <button
                                     onClick={saveKey}
                                     disabled={!apiKey.trim()}
-                                    className="w-full py-3 bg-white text-black rounded-xl font-medium text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+                                    className="w-full py-3 bg-white text-black rounded-xl font-medium text-sm disabled:opacity-30"
                                 >
                                     Save Key
                                 </button>
@@ -204,7 +191,7 @@ User: ${userMessage}`
                                         <button
                                             onClick={sendMessage}
                                             disabled={!input.trim() || isLoading}
-                                            className="w-12 h-12 bg-white text-black rounded-xl flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+                                            className="w-12 h-12 bg-white text-black rounded-xl flex items-center justify-center disabled:opacity-30"
                                         >
                                             <Send size={16} />
                                         </button>

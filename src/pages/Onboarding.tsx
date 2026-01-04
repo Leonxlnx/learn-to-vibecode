@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Check, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Sparkles, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 type OnboardingData = {
@@ -30,6 +30,7 @@ const vibecodeLevels = [
 const Onboarding = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState<OnboardingData>({
         name: '',
         email: '',
@@ -69,33 +70,21 @@ const Onboarding = () => {
     };
 
     const handleComplete = async () => {
-        // Determine learning path based on vibecoding experience + programming skills
-        // 5 PATHS - BALANCED LOGIC:
-        // 1. "expert" - Claims expert vibecoder (4) AND has coding experience (avgExp >= 3)
-        // 2. "speedrunner" - Good at vibecoding (3+) AND some coding (avgExp >= 2)
-        // 3. "developer" - Strong coder (avgExp >= 4) but new to vibecoding (0-1)
-        // 4. "builder" - Has some experience either way
-        // 5. "beginner" - Low on both, needs full curriculum
+        setIsLoading(true);
 
+        // Determine learning path based on vibecoding experience + programming skills
         const avgExp = (data.expGeneral + data.expWebdev + data.expAppdev + data.expGamedev) / 4;
         const vibeLvl = data.vibecodeLevel;
 
         let path = 'beginner';
 
-        // Expert: Must have BOTH high vibecoding AND coding skills
         if (vibeLvl >= 4 && avgExp >= 3) {
             path = 'expert';
-        }
-        // Speedrunner: Good at vibecoding with decent coding background
-        else if (vibeLvl >= 3 && avgExp >= 2) {
+        } else if (vibeLvl >= 3 && avgExp >= 2) {
             path = 'speedrunner';
-        }
-        // Developer: Strong coder but new to AI-assisted development
-        else if (avgExp >= 4 && vibeLvl <= 1) {
+        } else if (avgExp >= 4 && vibeLvl <= 1) {
             path = 'developer';
-        }
-        // Builder: Has some experience in either vibecoding or regular coding
-        else if (vibeLvl >= 1 || avgExp >= 2) {
+        } else if (vibeLvl >= 1 || avgExp >= 2) {
             path = 'builder';
         }
 
@@ -106,7 +95,7 @@ const Onboarding = () => {
         try {
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
-                const { error } = await supabase
+                await supabase
                     .from('profiles')
                     .upsert({
                         id: user.id,
@@ -121,16 +110,14 @@ const Onboarding = () => {
                         learning_path: path,
                         onboarding_completed: true
                     });
-
-                if (error) {
-                    console.error('Error saving profile:', error);
-                }
             }
         } catch (error) {
             console.error('Error saving profile:', error);
         }
 
-        setStep(totalSteps - 1); // Show profile summary
+        // Short delay for visual feedback, then navigate
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        navigate('/dashboard');
     };
 
     // Path data for display
@@ -153,6 +140,24 @@ const Onboarding = () => {
             {/* Subtle red aurora */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-900/10 blur-[150px] rounded-full pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-red-900/5 blur-[120px] rounded-full pointer-events-none" />
+
+            {/* Loading Screen */}
+            {isLoading && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="fixed inset-0 bg-[#0a0a0a] z-50 flex flex-col items-center justify-center"
+                >
+                    <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="mb-6"
+                    >
+                        <Loader2 size={40} className="text-white/40" />
+                    </motion.div>
+                    <p className="text-white/60 text-lg">Setting up your course...</p>
+                </motion.div>
+            )}
 
             {/* Progress Indicator */}
             <div className="fixed top-8 left-1/2 -translate-x-1/2 flex gap-2 z-20">
