@@ -123,39 +123,60 @@ const CardNav = ({
 
                                             {/* Inner Grid */}
                                             <div className="grid grid-cols-2 gap-2 relative z-10">
-                                                {item.links.map((link, i) => (
-                                                    <a
-                                                        key={i}
-                                                        href={link.href || '#'}
-                                                        className={`
-                                                            relative group overflow-hidden rounded-xl border border-white/5 p-4 flex flex-col justify-between
-                                                            transition-all duration-300 hover:border-white/20 hover:shadow-lg
-                                                            ${link.span || 'col-span-1'}
-                                                            ${link.span === 'col-span-2' ? 'h-24' : 'h-32'}
-                                                        `}
-                                                    >
-                                                        {/* Hover Gradient Background */}
-                                                        <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${link.color || 'from-white/5 to-white/10'}`} />
+                                                {item.links.map((link, i) => {
+                                                    const isExternal = link.href?.startsWith('http://') || link.href?.startsWith('https://') || link.href?.startsWith('mailto:');
+                                                    const linkContent = (
+                                                        <>
+                                                            {/* Hover Gradient Background */}
+                                                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${link.color || 'from-white/5 to-white/10'}`} />
 
-                                                        {/* Icon & Arrow */}
-                                                        <div className="flex justify-between items-start z-10">
-                                                            <div className="text-white/50 group-hover:text-white transition-colors duration-300">
-                                                                {link.icon || <Sparkles size={16} />}
-                                                            </div>
-                                                            <GoArrowUpRight className="text-white/20 group-hover:text-white transition-colors duration-300" size={12} />
-                                                        </div>
-
-                                                        {/* Text Content */}
-                                                        <div className="z-10 mt-auto">
-                                                            <div className="text-sm font-bold text-white mb-0.5">{link.label}</div>
-                                                            {link.description && (
-                                                                <div className="text-[10px] text-gray-500 font-medium leading-tight group-hover:text-gray-300 transition-colors">
-                                                                    {link.description}
+                                                            {/* Icon & Arrow */}
+                                                            <div className="flex justify-between items-start z-10">
+                                                                <div className="text-white/50 group-hover:text-white transition-colors duration-300">
+                                                                    {link.icon || <Sparkles size={16} />}
                                                                 </div>
-                                                            )}
-                                                        </div>
-                                                    </a>
-                                                ))}
+                                                                <GoArrowUpRight className="text-white/20 group-hover:text-white transition-colors duration-300" size={12} />
+                                                            </div>
+
+                                                            {/* Text Content */}
+                                                            <div className="z-10 mt-auto">
+                                                                <div className="text-sm font-bold text-white mb-0.5">{link.label}</div>
+                                                                {link.description && (
+                                                                    <div className="text-[10px] text-gray-500 font-medium leading-tight group-hover:text-gray-300 transition-colors">
+                                                                        {link.description}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </>
+                                                    );
+
+                                                    const className = `
+                                                        relative group overflow-hidden rounded-xl border border-white/5 p-4 flex flex-col justify-between
+                                                        transition-all duration-300 hover:border-white/20 hover:shadow-lg
+                                                        ${link.span || 'col-span-1'}
+                                                        ${link.span === 'col-span-2' ? 'h-24' : 'h-32'}
+                                                    `;
+
+                                                    return isExternal ? (
+                                                        <a
+                                                            key={i}
+                                                            href={link.href || '#'}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className={className}
+                                                        >
+                                                            {linkContent}
+                                                        </a>
+                                                    ) : (
+                                                        <Link
+                                                            key={i}
+                                                            to={link.href || '/'}
+                                                            className={className}
+                                                        >
+                                                            {linkContent}
+                                                        </Link>
+                                                    );
+                                                })}
                                             </div>
                                         </motion.div>
                                     </div>
@@ -253,24 +274,47 @@ const CardNav = ({
                                 <div key={idx} className="flex flex-col gap-4">
                                     <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest pl-1">{item.label}</h3>
                                     <div className="grid grid-cols-2 gap-3">
-                                        {item.links.map((link, i) => (
-                                            <a
-                                                key={i}
-                                                href="#"
-                                                className={`
-                                                    bg-[#111] border border-white/5 rounded-2xl p-4 flex flex-col gap-4 active:scale-95 transition-transform
-                                                    ${link.span === 'col-span-2' ? 'col-span-2' : 'col-span-1'}
-                                                `}
-                                            >
-                                                <div className="text-white">
-                                                    {link.icon || <Sparkles size={16} />}
-                                                </div>
-                                                <div>
-                                                    <div className="text-white font-medium text-sm">{link.label}</div>
-                                                    {link.description && <div className="text-xs text-gray-500 mt-1">{link.description}</div>}
-                                                </div>
-                                            </a>
-                                        ))}
+                                        {item.links.map((link, i) => {
+                                            const isExternal = link.href?.startsWith('http://') || link.href?.startsWith('https://') || link.href?.startsWith('mailto:');
+                                            const linkContent = (
+                                                <>
+                                                    <div className="text-white">
+                                                        {link.icon || <Sparkles size={16} />}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-white font-medium text-sm">{link.label}</div>
+                                                        {link.description && <div className="text-xs text-gray-500 mt-1">{link.description}</div>}
+                                                    </div>
+                                                </>
+                                            );
+
+                                            const className = `
+                                                bg-[#111] border border-white/5 rounded-2xl p-4 flex flex-col gap-4 active:scale-95 transition-transform
+                                                ${link.span === 'col-span-2' ? 'col-span-2' : 'col-span-1'}
+                                            `;
+
+                                            return isExternal ? (
+                                                <a
+                                                    key={i}
+                                                    href={link.href || '#'}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                    className={className}
+                                                >
+                                                    {linkContent}
+                                                </a>
+                                            ) : (
+                                                <Link
+                                                    key={i}
+                                                    to={link.href || '/'}
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                    className={className}
+                                                >
+                                                    {linkContent}
+                                                </Link>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             ))}
