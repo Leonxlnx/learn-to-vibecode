@@ -1,33 +1,16 @@
-import { Suspense, lazy, useState, useEffect } from 'react';
+import { Suspense } from 'react';
 import { motion, Variants } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-// Lazy load heavy Three.js components - only load when visible
-const Canvas = lazy(() => import('@react-three/fiber').then(mod => ({ default: mod.Canvas })));
-const Bubble = lazy(() => import('@/components/3d/Bubble'));
-
-// Static placeholder while 3D loads
-const BubblePlaceholder = () => (
-    <div className="absolute inset-0 bg-gradient-radial from-red-900/20 via-transparent to-transparent" />
-);
+import Bubble from '@/components/3d/Bubble';
 
 /**
- * Hero section with lazy-loaded 3D bubble background
- * Text renders immediately, 3D loads after initial paint
+ * Hero section with animated 3D bubble background
+ * Features staggered text animations and CTA button
  */
 const Hero = () => {
-    const [show3D, setShow3D] = useState(false);
-
-    // Defer 3D loading until after LCP
-    useEffect(() => {
-        // Wait for first paint, then load 3D
-        const timer = requestIdleCallback(() => {
-            setShow3D(true);
-        }, { timeout: 2000 });
-
-        return () => cancelIdleCallback(timer);
-    }, []);
 
     const containerVars: Variants = {
         visible: {
@@ -47,34 +30,38 @@ const Hero = () => {
         },
     };
 
+    const letterVars: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: (i: number) => ({
+            opacity: 1,
+            y: 0,
+            transition: {
+                delay: 0.5 + i * 0.05,
+                duration: 0.8,
+                ease: [0.215, 0.61, 0.355, 1] as [number, number, number, number],
+            },
+        }),
+    };
+
     return (
         <>
             <section className="relative h-screen w-full flex flex-col items-center justify-center bg-[#050505] overflow-hidden">
-                {/* Static gradient placeholder - renders immediately for LCP */}
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-gradient-radial from-red-900/30 via-red-900/5 to-transparent" />
-                </div>
-
-                {/* 3D Canvas - lazy loaded after initial paint */}
-                {show3D && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
-                        className="absolute inset-0 z-0"
-                    >
-                        <Suspense fallback={<BubblePlaceholder />}>
-                            <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 5], fov: 45 }} gl={{ antialias: false, powerPreference: 'high-performance' }}>
-                                <Suspense fallback={null}>
-                                    <Bubble />
-                                    <ambientLight intensity={0.5} />
-                                </Suspense>
-                            </Canvas>
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 2, delay: 0.5, ease: "easeOut" }}
+                    className="absolute inset-0 z-0"
+                >
+                    <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 5], fov: 45 }}>
+                        <Suspense fallback={null}>
+                            <Bubble />
+                            <Environment preset="night" />
+                            {/* @ts-ignore */}
+                            <ambientLight intensity={0.5} />
                         </Suspense>
-                    </motion.div>
-                )}
+                    </Canvas>
+                </motion.div>
 
-                {/* Text content - renders immediately */}
                 <motion.div
                     variants={containerVars}
                     initial="hidden"
@@ -96,52 +83,60 @@ const Hero = () => {
                             </motion.span>
                         </div>
 
-                        <div className="flex flex-wrap justify-center">
-                            {'VIBECODE'.split('').map((letter, i) => (
+                        <div className="text-[14vw] flex">
+                            {"VIBECODE".split("").map((char, i) => (
                                 <motion.span
                                     key={i}
                                     custom={i}
-                                    initial="hidden"
-                                    animate="visible"
-                                    variants={{
-                                        hidden: { opacity: 0, y: 20 },
-                                        visible: (idx: number) => ({
-                                            opacity: 1,
-                                            y: 0,
-                                            transition: {
-                                                delay: 0.5 + idx * 0.05,
-                                                duration: 0.8,
-                                                ease: [0.215, 0.61, 0.355, 1] as [number, number, number, number],
-                                            },
-                                        }),
-                                    }}
-                                    className="text-[18vw] md:text-[16vw]"
+                                    variants={letterVars}
+                                    className="inline-block"
                                 >
-                                    {letter}
+                                    {char}
                                 </motion.span>
                             ))}
                         </div>
+
+                        <motion.div
+                            initial={{ opacity: 0, letterSpacing: "1em" }}
+                            animate={{ opacity: 0.6, letterSpacing: "0.3em" }}
+                            transition={{ duration: 2, delay: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+                            className="font-sans text-[5vw] font-light mt-4"
+                        >
+                            PROPERLY
+                        </motion.div>
                     </h1>
 
-                    <motion.p
-                        variants={itemVars}
-                        className="text-[clamp(1rem,2vw,1.5rem)] text-white/50 mt-8 max-w-xl font-light"
-                    >
-                        Master AI-assisted development. Build real projects.
-                    </motion.p>
+                    {/* CTA BUTTON */}
+                    <div className="flex flex-col items-center gap-4 mt-12 pointer-events-auto">
+                        <Link to="/auth">
+                            <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ delay: 2.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                                className="group relative flex items-center gap-4 px-12 py-5 bg-white text-black rounded-full overflow-hidden shadow-[0_0_60px_rgba(255,255,255,0.15)] hover:shadow-[0_0_80px_rgba(255,255,255,0.25)] transition-shadow duration-500"
+                            >
+                                <span className="relative z-10 text-sm font-bold tracking-[0.2em] uppercase group-hover:text-white transition-colors duration-500">
+                                    Start Learning
+                                </span>
+                                <ArrowRight className="relative z-10 w-4 h-4 group-hover:text-white group-hover:translate-x-1 transition-all duration-500" />
 
-                    <motion.div
-                        variants={itemVars}
-                        className="mt-12 pointer-events-auto"
-                    >
-                        <Link
-                            to="/auth"
-                            className="group flex items-center gap-3 px-8 py-4 rounded-full bg-white text-black font-medium text-lg hover:bg-white/90 transition-all"
-                        >
-                            Start Learning
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                {/* Smooth Red Fill Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-500 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
+                            </motion.button>
                         </Link>
-                    </motion.div>
+
+                        <motion.span
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 0.5 }}
+                            transition={{ delay: 3, duration: 1 }}
+                            className="text-xs font-mono uppercase tracking-widest text-white/50"
+                        >
+                            Free
+                        </motion.span>
+                    </div>
+
                 </motion.div>
             </section>
         </>
