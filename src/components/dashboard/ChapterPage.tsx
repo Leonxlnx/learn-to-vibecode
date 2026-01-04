@@ -165,7 +165,7 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
             {/* Header */}
             <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold ${isComplete ? 'bg-green-500/20 text-green-400' : 'bg-white/5 text-white/40'}`}>
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold ${isComplete ? 'bg-white/20 text-white' : 'bg-white/5 text-white/40'}`}>
                         {isComplete ? <Check size={18} /> : chapterIndex + 1}
                     </div>
                     <div>
@@ -176,7 +176,7 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
 
                 {/* AI Studio Note */}
                 <div className="text-sm text-white/40 italic">
-                    📝 Note: We are using Google AI Studio since you don't have to pay for it and it is great for demonstration purposes.
+                    Note: We are using Google AI Studio since you don't have to pay for it and it is great for demonstration purposes.
                 </div>
             </div>
 
@@ -241,17 +241,17 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className={`w-full py-5 rounded-2xl font-bold text-lg transition-all ${isComplete
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                    ? 'bg-white/10 text-white border border-white/20'
                     : 'bg-white text-black hover:bg-white/90 shadow-[0_0_30px_rgba(255,255,255,0.1)]'
                     }`}
             >
                 {isComplete ? (
                     <span className="flex items-center justify-center gap-2">
                         <Check size={20} />
-                        Completed! +{chapter.vibeCoins} VibeCoins earned
+                        Completed - +{chapter.vibeCoins} VibeCoins earned
                     </span>
                 ) : (
-                    <span>Complete & Earn {chapter.vibeCoins} VibeCoins ✨</span>
+                    <span>Complete & Earn {chapter.vibeCoins} VibeCoins</span>
                 )}
             </motion.button>
 
@@ -303,9 +303,9 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
                 ) : (
                     <Link
                         to="/dashboard"
-                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-green-500/20 text-green-400 hover:bg-green-500/30 transition-all"
+                        className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all"
                     >
-                        <span className="text-sm font-medium">Course Complete! 🎉</span>
+                        <span className="text-sm font-medium">Course Complete</span>
                         <ArrowRight size={16} />
                     </Link>
                 )}

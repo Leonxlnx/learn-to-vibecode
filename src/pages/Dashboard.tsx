@@ -177,7 +177,7 @@ const Dashboard = () => {
       >
         <div className={`p-4 sm:p-6 lg:p-10 max-w-6xl ${isMobile ? 'pt-20' : 'pt-20'}`}>
           {activePage === 'home' && (
-            <DashboardHome userName={userName} learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} />
+            <DashboardHome userName={userName} learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} userId={user.id} />
           )}
           {activePage === 'course' && <DashboardCourse learningPath={learningPath} completedChapters={profile?.completed_chapters || {}} />}
           {activePage === 'module' && <ModulePage userId={user.id} />}
@@ -191,6 +191,24 @@ const Dashboard = () => {
                 email: user.email || '',
                 learningPath,
                 createdAt,
+              }}
+              onProfileUpdate={() => {
+                supabase
+                  .from('profiles')
+                  .select('name, learning_path, created_at, vibe_coins, completed_chapters')
+                  .eq('id', user.id)
+                  .single()
+                  .then(({ data }) => {
+                    if (data) {
+                      setProfile({
+                        name: data.name || '',
+                        learning_path: data.learning_path || 'beginner',
+                        created_at: data.created_at || '',
+                        vibe_coins: data.vibe_coins || 0,
+                        completed_chapters: (data.completed_chapters as Record<string, string[]>) || {},
+                      });
+                    }
+                  });
               }}
             />
           )}
