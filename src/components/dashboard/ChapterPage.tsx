@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Lightbulb, Zap, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Lightbulb, Zap } from 'lucide-react';
 import { COURSE_MODULES, getModuleById } from '@/data/courseContent';
 import { supabase } from '@/integrations/supabase/client';
 import confetti from 'canvas-confetti';
@@ -174,11 +174,9 @@ const ChapterPage = ({ userId }: ChapterPageProps) => {
                     </div>
                 </div>
 
-                {/* AI Studio Badge - Highlighted */}
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30">
-                    <Sparkles size={14} className="text-blue-400" />
-                    <span className="text-sm text-blue-300 font-medium">Powered by Google AI Studio</span>
-                    <span className="text-xs text-white/40">• Free & Fast</span>
+                {/* AI Studio Note */}
+                <div className="text-sm text-white/40 italic">
+                    📝 Note: We are using Google AI Studio since you don't have to pay for it and it is great for demonstration purposes.
                 </div>
             </div>
 
