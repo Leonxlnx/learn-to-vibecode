@@ -70,7 +70,14 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          id: string | null
+          name: string | null
+          vibe_coins: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

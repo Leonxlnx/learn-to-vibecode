@@ -110,9 +110,9 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0 }: Sideba
 
               {/* User Section */}
               <div className="p-4 border-t border-white/5">
-                {/* VibeCoins */}
+              {/* VibeCoins */}
                 <div className="flex items-center gap-2 px-4 py-3 mb-2 rounded-xl bg-white/5">
-                  <Coins size={16} className="text-yellow-500/80" />
+                  <Coins size={16} className="text-white/60" />
                   <span className="font-bold text-white text-sm">{vibeCoins}</span>
                   <span className="text-white/30 text-xs">VibeCoins</span>
                 </div>
@@ -251,7 +251,7 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0 }: Sideba
       <div className="p-3 border-t border-white/5">
         {/* VibeCoins */}
         <div className={`flex items-center gap-2 px-3 py-2.5 mb-2 rounded-xl bg-white/5 ${!isOpen ? 'justify-center' : ''}`}>
-          <Coins size={16} className="text-yellow-500/80 flex-shrink-0" />
+          <Coins size={16} className="text-white/60 flex-shrink-0" />
           <AnimatePresence>
             {isOpen && (
               <motion.div

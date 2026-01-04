@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Zap, MessageCircle, Bookmark, Trophy, BookOpen, Clock } from 'lucide-react';
 import { COURSE_MODULES } from '@/data/courseContent';
+import Leaderboard from './Leaderboard';
 
 interface DashboardHomeProps {
     userName: string;
     learningPath: string;
     completedChapters: Record<string, string[]>;
+    userId?: string;
 }
 
 const pathLabels: Record<string, { label: string; color: string }> = {
     speedrunner: { label: 'Speedrunner', color: 'text-orange-400' },
     builder: { label: 'Builder', color: 'text-blue-400' },
     developer: { label: 'Developer', color: 'text-cyan-400' },
-    beginner: { label: 'Beginner', color: 'text-green-400' },
+    beginner: { label: 'Beginner', color: 'text-white/70' },
     expert: { label: 'Expert', color: 'text-purple-400' },
 };
 
-const DashboardHome = ({ userName, learningPath, completedChapters }: DashboardHomeProps) => {
+const DashboardHome = ({ userName, learningPath, completedChapters, userId }: DashboardHomeProps) => {
     const pathInfo = pathLabels[learningPath] || pathLabels.beginner;
     
     // Calculate total progress
@@ -80,7 +82,7 @@ const DashboardHome = ({ userName, learningPath, completedChapters }: DashboardH
                                 <BookOpen size={12} />
                                 {currentModule.chapters.length} lessons
                             </span>
-                            <span className="flex items-center gap-1 text-yellow-500/70">
+                            <span className="flex items-center gap-1 text-white/50">
                                 <Trophy size={12} />
                                 {currentModule.totalVibeCoins} VC
                             </span>
@@ -139,6 +141,9 @@ const DashboardHome = ({ userName, learningPath, completedChapters }: DashboardH
                     </div>
                 </a>
             </div>
+
+            {/* Leaderboard */}
+            <Leaderboard currentUserId={userId} />
 
             {/* Footer Links */}
             <div className="flex items-center gap-4 pt-4 border-t border-white/5">
