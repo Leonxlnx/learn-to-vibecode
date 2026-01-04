@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, BookOpen, FolderOpen, Bookmark, Settings, LogOut, Menu, X, ChevronLeft } from 'lucide-react';
+import { Home, BookOpen, FolderOpen, Bookmark, Settings, LogOut, Menu, X, ChevronLeft, Coins } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
@@ -8,6 +8,7 @@ interface SidebarProps {
   userName: string;
   isOpen: boolean;
   onToggle: () => void;
+  vibeCoins?: number;
 }
 
 const navItems = [
@@ -18,7 +19,7 @@ const navItems = [
   { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
 ];
 
-const Sidebar = ({ onLogout, userName, isOpen, onToggle }: SidebarProps) => {
+const Sidebar = ({ onLogout, userName, isOpen, onToggle, vibeCoins = 0 }: SidebarProps) => {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(false);
 
@@ -70,7 +71,7 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle }: SidebarProps) => {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed left-0 top-0 h-full w-72 bg-[#0a0a0a] border-r border-white/5 z-50 flex flex-col"
+              className="fixed left-0 top-0 h-full w-72 bg-[#0d0d0d] border-r border-white/5 z-50 flex flex-col"
             >
               {/* Header */}
               <div className="p-5 border-b border-white/5 flex items-center justify-between">
@@ -107,6 +108,13 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle }: SidebarProps) => {
 
               {/* User Section */}
               <div className="p-4 border-t border-white/5">
+                {/* VibeCoins */}
+                <div className="flex items-center gap-2 px-4 py-3 mb-2 rounded-xl bg-white/5">
+                  <Coins size={16} className="text-yellow-500/80" />
+                  <span className="font-bold text-white text-sm">{vibeCoins}</span>
+                  <span className="text-white/30 text-xs">VibeCoins</span>
+                </div>
+                
                 <div className="flex items-center gap-3 px-4 py-3 mb-2">
                   <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-white font-bold">
                     {userName?.charAt(0)?.toUpperCase() || 'U'}
@@ -133,7 +141,7 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle }: SidebarProps) => {
     <motion.aside
       animate={{ width: isOpen ? 260 : 72 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-      className="fixed left-0 top-0 h-screen bg-[#0a0a0a] border-r border-white/5 flex flex-col z-40"
+      className="fixed left-0 top-0 h-screen bg-[#0d0d0d] border-r border-white/5 flex flex-col z-40"
     >
       {/* Header */}
       <div className="p-4 flex items-center justify-between h-16">
@@ -203,6 +211,24 @@ const Sidebar = ({ onLogout, userName, isOpen, onToggle }: SidebarProps) => {
 
       {/* User Section */}
       <div className="p-3 border-t border-white/5">
+        {/* VibeCoins */}
+        <div className={`flex items-center gap-2 px-3 py-2.5 mb-2 rounded-xl bg-white/5 ${!isOpen ? 'justify-center' : ''}`}>
+          <Coins size={16} className="text-yellow-500/80 flex-shrink-0" />
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex items-center gap-1.5"
+              >
+                <span className="font-bold text-white text-sm">{vibeCoins}</span>
+                <span className="text-white/30 text-xs">VibeCoins</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        
         <div className={`flex items-center gap-3 px-4 py-3 mb-1 ${!isOpen ? 'justify-center' : ''}`}>
           <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
             {userName.charAt(0).toUpperCase()}
